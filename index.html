@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Galentine Super Tuna 💜</title>
+<title>Galentine Super Tuna 💜🍓</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
@@ -38,7 +38,7 @@
 <body>
 
 <div id="card">
-  <h1>💜 ANU & Friends 💜</h1>
+  <h1>💜 ANU & Friends 💜🍓</h1>
   <p>Ready for some Super Tuna fun? 🐟</p>
   <button id="startBtn">Catch it! 🎣</button>
 </div>
@@ -46,13 +46,21 @@
 <script>
 const config = {
   valentineName: "ANU",
-  floatingEmojis: { hearts:['❤️','💖','💝'], bears:['🧸','🐻'] },
+  floatingEmojis: {
+    hearts: ['💜','💖','💝','🍓'],
+    bts: ['🎤','🎶','🎧','🕺','💃'],
+    bt21: ['🐥','🐨','🐰','🍪','🐴','💖','🤖']
+  },
   questions: {
-    first: { text:"Do you like me?", yesBtn:"Yes", noBtn:"No", secretAnswer:"I don't like you, I love you! ❤️" },
-    second: { text:"How much do you love me?", nextBtn:"Next ❤️" },
+    first: { text:"Do you like me?", yesBtn:"Yes", noBtn:"No", secretAnswer:"I don't like you, I love you! ❤️🍓" },
+    second: { text:"How much do you love me?", nextBtn:"Next 💜🍓" },
     third: { text:"Will you be my Valentine...?", yesBtn:"Yes!", noBtn:"No" }
   },
-  celebration: { title:"Yay! Best friends forever! 💜", message:"Time for Super Tuna dance! 🐟💃", emojis:"💖🐟🧸💜" }
+  celebration: {
+    title: "Yay! Best friends + ARMY forever! 💜",
+    message: "Time for Super Tuna & BTS vibes! 🐟🎶🍓",
+    emojis: "💜🍓🎤🎶🐥🐨🐰💖"
+  }
 };
 
 // ---------- FLOATING EMOJIS ----------
@@ -60,8 +68,14 @@ function floatEmojis() {
   setInterval(()=>{
     const emoji = document.createElement("div");
     emoji.className="emoji";
-    emoji.innerText = Math.random() > 0.5 ? config.floatingEmojis.hearts[Math.floor(Math.random()*config.floatingEmojis.hearts.length)]
-                                          : config.floatingEmojis.bears[Math.floor(Math.random()*config.floatingEmojis.bears.length)];
+
+    const allEmojis = [
+      ...config.floatingEmojis.hearts,
+      ...config.floatingEmojis.bts,
+      ...config.floatingEmojis.bt21
+    ];
+
+    emoji.innerText = allEmojis[Math.floor(Math.random()*allEmojis.length)];
     emoji.style.left = Math.random()*100 + "vw";
     emoji.style.bottom = "-50px";
     emoji.style.animationDuration = (10+Math.random()*10) + "s";
