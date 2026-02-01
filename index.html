@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Super Tuna 💜🍓</title>
+<title>Galentine Super Tuna 💜🍓</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
@@ -36,16 +36,20 @@
 <body>
 
 <div id="card">
-  <h1>💜 Super Tuna Fun 💜🍓</h1>
-  <p>For a BTS fan! 🎶🍓</p>
-  <button id="startBtn">Let's Go! 🎣</button>
+  <h1>💜 Super Tuna Galentine 💜🍓</h1>
+  <p>Are you ready for some fun? 🎶🍓</p>
+  <button id="startBtn">Start! 🎣</button>
 </div>
 
 <script>
 const config = {
   floatingEmojis: ['💜','🍓','🎶'],
-  celebration: { title:"Woohoo! Fun time! 💜", emojis:"💜🍓🎶" },
-  easterEgg: '💜 ARMY 💜' // subtle BTS nod
+  easterEgg: '💜 ARMY 💜',
+  questions: [
+    { text:"Will you be my Galentine bbg?", yes:"Yes! 💜", no:"No" },
+    { text:"Wanna do some Super Tuna fun? 🐟", yes:"Let's go! 🍓", no:"Maybe later" }
+  ],
+  celebration: { title:"Woohoo! Fun time! 💜", emojis:"💜🍓🎶" }
 };
 
 // ---------- FLOATING EMOJIS ----------
@@ -62,7 +66,7 @@ function floatEmojis(extraEmojis = []) {
     setTimeout(()=>emoji.remove(),15000);
   }, 400);
 }
-floatEmojis(); // normal floating emojis
+floatEmojis();
 
 // ---------- CONFETTI ----------
 function confetti() {
@@ -78,16 +82,164 @@ function confetti() {
   }
 }
 
-// ---------- START BUTTON ----------
+// ---------- QUESTIONS & RUNAWAY NO ----------
+let step=0;
 const card = document.getElementById("card");
-document.getElementById("startBtn").onclick = ()=>{
+
+function showQuestion(s){
+  step = s;
+  card.innerHTML = "";
+  const q = config.questions[s-1];
+  const p = document.createElement("p"); p.innerText = q.text;
+  const yes = document.createElement("button"); yes.innerText = q.yes;
+  const no = document.createElement("button"); no.innerText = q.no;
+
+  yes.onclick = ()=> s<config.questions.length ? showQuestion(s+1) : showCelebration();
+  no.onclick = ()=> alert("Haha, try again 😆"); // playful reaction
+
+  // runaway effect for No button
+  no.addEventListener("mouseover",()=>{
+    const x=Math.random()*180-90; const y=Math.random()*180-90;
+    no.style.transform=`translate(${x}px,${y}px)`;
+  });
+
+  card.append(p,yes,no);
+}
+
+// ---------- CELEBRATION ----------
+function showCelebration(){
   card.innerHTML = `<h1>${config.celebration.title}</h1>
                     <p>${config.celebration.emojis}</p>`;
   confetti();
-
-  // Add subtle BTS Easter egg emojis
+  // add subtle ARMY Easter egg emojis
   floatEmojis([config.easterEgg]);
+}
+
+// ---------- START BUTTON ----------
+document.getElementById("startBtn").onclick = ()=>showQuestion(1);
+</script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Galentine Super Tuna 💜🍓</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
+
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Comic Neue', cursive; }
+  body { height:100vh; display:flex; justify-content:center; align-items:center;
+         background: linear-gradient(135deg,#6a0dad,#9b59b6); overflow:hidden; }
+
+  #card { background: #f5e6ff; padding:30px; border-radius:25px; text-align:center;
+          width:90%; max-width:400px; box-shadow:0 10px 25px rgba(0,0,0,0.25);
+          position:relative; z-index:1; }
+
+  h1 { font-size:24px; color:#4b0082; margin-bottom:15px; }
+  p { font-size:16px; margin-bottom:20px; color:#4b0082; }
+
+  button { padding:12px 28px; font-size:16px; border:none; border-radius:50px;
+           cursor:pointer; margin:10px; background:#9b59b6; color:white;
+           transition:0.2s; }
+  button:hover { background:#8e44ad; }
+  button:active { transform:scale(0.95); }
+
+  .emoji { position:fixed; font-size:22px; animation:floatUp 15s linear forwards; opacity:0.7; z-index:0; }
+
+  @keyframes floatUp { from { transform:translateY(0); } to { transform:translateY(-100vh); } }
+
+  .confetti-piece { position:fixed; width:10px; height:10px; background:var(--color); top:0;
+                     animation:fall 3s forwards; z-index:10; }
+  @keyframes fall { to { transform:translate(var(--x),100vh) rotate(360deg); opacity:0; } }
+</style>
+</head>
+<body>
+
+<div id="card">
+  <h1>💜 Super Tuna Galentine 💜🍓</h1>
+  <p>Are you ready for some fun? 🎶🍓</p>
+  <button id="startBtn">Start! 🎣</button>
+</div>
+
+<script>
+const config = {
+  floatingEmojis: ['💜','🍓','🎶'],
+  easterEgg: '💜 ARMY 💜',
+  questions: [
+    { text:"Will you be my Galentine buddy?", yes:"Yes! 💜", no:"No" },
+    { text:"Wanna do some Super Tuna fun? 🐟", yes:"Let's go! 🍓", no:"Maybe later" }
+  ],
+  celebration: { title:"Woohoo! Fun time! 💜", emojis:"💜🍓🎶" }
 };
+
+// ---------- FLOATING EMOJIS ----------
+function floatEmojis(extraEmojis = []) {
+  setInterval(()=>{
+    const emoji = document.createElement("div");
+    emoji.className="emoji";
+    const allEmojis = [...config.floatingEmojis, ...extraEmojis];
+    emoji.innerText = allEmojis[Math.floor(Math.random()*allEmojis.length)];
+    emoji.style.left = Math.random()*100 + "vw";
+    emoji.style.bottom = "-50px";
+    emoji.style.animationDuration = (10+Math.random()*10) + "s";
+    document.body.appendChild(emoji);
+    setTimeout(()=>emoji.remove(),15000);
+  }, 400);
+}
+floatEmojis();
+
+// ---------- CONFETTI ----------
+function confetti() {
+  const colors = ["#9b59b6","#8e44ad","#d291bc"];
+  for(let i=0;i<30;i++){
+    const c = document.createElement("div");
+    c.className="confetti-piece";
+    c.style.setProperty("--color", colors[Math.floor(Math.random()*colors.length)]);
+    c.style.setProperty("--x",(Math.random()*200-100)+"px");
+    c.style.left=Math.random()*100+"vw";
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
+}
+
+// ---------- QUESTIONS & RUNAWAY NO ----------
+let step=0;
+const card = document.getElementById("card");
+
+function showQuestion(s){
+  step = s;
+  card.innerHTML = "";
+  const q = config.questions[s-1];
+  const p = document.createElement("p"); p.innerText = q.text;
+  const yes = document.createElement("button"); yes.innerText = q.yes;
+  const no = document.createElement("button"); no.innerText = q.no;
+
+  yes.onclick = ()=> s<config.questions.length ? showQuestion(s+1) : showCelebration();
+  no.onclick = ()=> alert("Haha, try again 😆"); // playful reaction
+
+  // runaway effect for No button
+  no.addEventListener("mouseover",()=>{
+    const x=Math.random()*180-90; const y=Math.random()*180-90;
+    no.style.transform=`translate(${x}px,${y}px)`;
+  });
+
+  card.append(p,yes,no);
+}
+
+// ---------- CELEBRATION ----------
+function showCelebration(){
+  card.innerHTML = `<h1>${config.celebration.title}</h1>
+                    <p>${config.celebration.emojis}</p>`;
+  confetti();
+  // add subtle ARMY Easter egg emojis
+  floatEmojis([config.easterEgg]);
+}
+
+// ---------- START BUTTON ----------
+document.getElementById("startBtn").onclick = ()=>showQuestion(1);
 </script>
 
 </body>
