@@ -2,26 +2,26 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Galentine Super Tuna 💜🍓</title>
+<title>Will You Be My Valentine? 💜🍓</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
 
   * { margin:0; padding:0; box-sizing:border-box; font-family:'Comic Neue', cursive; }
   body { height:100vh; display:flex; justify-content:center; align-items:center;
-         background: linear-gradient(135deg,#6a0dad,#9b59b6); overflow:hidden; }
+         background: linear-gradient(135deg,#ffafbd,#ffc3a0); overflow:hidden; }
 
-  #card { background: #f5e6ff; padding:30px; border-radius:25px; text-align:center;
+  #card { background: #fff0f5; padding:30px; border-radius:25px; text-align:center;
           width:90%; max-width:400px; box-shadow:0 10px 25px rgba(0,0,0,0.25);
-          position:relative; z-index:1; }
+          position:relative; z-index:1; color:#ff4757; }
 
-  h1 { font-size:24px; color:#4b0082; margin-bottom:15px; }
-  p { font-size:16px; margin-bottom:20px; color:#4b0082; }
+  h1 { font-size:24px; color:#ff4757; margin-bottom:15px; }
+  p { font-size:16px; margin-bottom:20px; color:#ff4757; }
 
   button { padding:12px 28px; font-size:16px; border:none; border-radius:50px;
-           cursor:pointer; margin:10px; background:#9b59b6; color:white;
+           cursor:pointer; margin:10px; background:#ff6b6b; color:white;
            transition:0.2s; }
-  button:hover { background:#8e44ad; }
+  button:hover { background:#ff8787; }
   button:active { transform:scale(0.95); }
 
   .emoji { position:fixed; font-size:22px; animation:floatUp 15s linear forwards; opacity:0.7; z-index:0; }
@@ -31,34 +31,48 @@
   .confetti-piece { position:fixed; width:10px; height:10px; background:var(--color); top:0;
                      animation:fall 3s forwards; z-index:10; }
   @keyframes fall { to { transform:translate(var(--x),100vh) rotate(360deg); opacity:0; } }
+
+  .heart-explosion {
+    position:fixed;
+    font-size:30px;
+    animation:explode 1s forwards;
+  }
+  @keyframes explode { 
+    0% { transform:scale(0); opacity:1; }
+    50% { transform:scale(1.5); opacity:1; }
+    100% { transform:scale(0); opacity:0; }
+  }
 </style>
 </head>
 <body>
 
 <div id="card">
-  <h1>💜 Super Tuna Galentine 💜🍓</h1>
-  <p>Are you ready for some fun? 🎶🍓</p>
+  <h1>💜 ANU's Galentine 💜🍓</h1>
+  <p>Are you ready for some BTS fun? 🎶🍓</p>
   <button id="startBtn">Start! 🎣</button>
 </div>
 
 <script>
 const config = {
-  floatingEmojis: ['💜','🍓','🎶'],
-  easterEgg: '💜 ARMY 💜',
+  valentineName: "ANU",
+  floatingEmojis: {
+    hearts: ['❤️','💖','💝','💗','💓'],
+    bears: ['🧸','🐻']
+  },
   questions: [
-    { text:"Will you be my Galentine bbg?", yes:"Yes! 💜", no:"No" },
-    { text:"Wanna do some Super Tuna fun? 🐟", yes:"Let's go! 🍓", no:"Maybe later" }
+    { text:"Do you like me?", yes:"Yes 💜", no:"No", secret:"I don't like you, I love you! ❤️" },
+    { text:"Wanna be my Galentine buddy?", yes:"Of course! 🍓", no:"No" }
   ],
-  celebration: { title:"Woohoo! Fun time! 💜", emojis:"💜🍓🎶" }
+  celebration: { title:"Yay! BTS Fun Time! 💖", message:"Time for hearts & confetti! 🎁💝", emojis:"💝🎉💜🍓🎶" }
 };
 
 // ---------- FLOATING EMOJIS ----------
-function floatEmojis(extraEmojis = []) {
+function floatEmojis(extra = []) {
   setInterval(()=>{
     const emoji = document.createElement("div");
     emoji.className="emoji";
-    const allEmojis = [...config.floatingEmojis, ...extraEmojis];
-    emoji.innerText = allEmojis[Math.floor(Math.random()*allEmojis.length)];
+    const all = [...config.floatingEmojis.hearts, ...config.floatingEmojis.bears, ...extra];
+    emoji.innerText = all[Math.floor(Math.random()*all.length)];
     emoji.style.left = Math.random()*100 + "vw";
     emoji.style.bottom = "-50px";
     emoji.style.animationDuration = (10+Math.random()*10) + "s";
@@ -70,8 +84,8 @@ floatEmojis();
 
 // ---------- CONFETTI ----------
 function confetti() {
-  const colors = ["#9b59b6","#8e44ad","#d291bc"];
-  for(let i=0;i<30;i++){
+  const colors = ["#ff6b6b","#ff8787","#ffb6b9"];
+  for(let i=0;i<40;i++){
     const c = document.createElement("div");
     c.className="confetti-piece";
     c.style.setProperty("--color", colors[Math.floor(Math.random()*colors.length)]);
@@ -82,7 +96,46 @@ function confetti() {
   }
 }
 
-// ---------- QUESTIONS & RUNAWAY NO ----------
+// ---------- HEART EXPLOSION ----------
+function heartExplosion(count=20) {
+  for(let i=0;i<count;i++){
+    const heart = document.createElement("div");
+    heart.className="heart-explosion";
+    heart.style.left = Math.random()*window.innerWidth + "px";
+    heart.style.top = Math.random()*window.innerHeight + "px";
+    heart.innerText = config.floatingEmojis.hearts[Math.floor(Math.random()*config.floatingEmojis.hearts.length)];
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(),1000);
+  }
+}
+
+// ---------- FUN INTERACTION AFTER YES ----------
+function miniInteraction(callback){
+  // Floating ARMY hearts + music notes swirl
+  floatEmojis(['💜 ARMY 💜','🎶']);
+  // Tap anywhere to pop a heart
+  const tapHandler = (e)=>{
+    const h = document.createElement("div");
+    h.className="heart-explosion";
+    h.style.left = e.clientX + "px";
+    h.style.top = e.clientY + "px";
+    h.innerText = '💜';
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),1000);
+  };
+  document.body.addEventListener('click', tapHandler);
+  
+  // Mini confetti burst
+  confetti();
+
+  // After 2s, remove tap event and continue
+  setTimeout(()=>{
+    document.body.removeEventListener('click', tapHandler);
+    callback();
+  },2000);
+}
+
+// ---------- QUESTIONS ----------
 let step=0;
 const card = document.getElementById("card");
 
@@ -94,8 +147,16 @@ function showQuestion(s){
   const yes = document.createElement("button"); yes.innerText = q.yes;
   const no = document.createElement("button"); no.innerText = q.no;
 
-  yes.onclick = ()=> s<config.questions.length ? showQuestion(s+1) : showCelebration();
-  no.onclick = ()=> alert("Haha, try again 😆"); // playful reaction
+  yes.onclick = ()=>{
+    miniInteraction(()=>{
+      if(s<config.questions.length){
+        showQuestion(s+1);
+      } else {
+        showCelebration();
+      }
+    });
+  };
+  no.onclick = ()=>{ alert("Haha, try again 😆"); };
 
   // runaway effect for No button
   no.addEventListener("mouseover",()=>{
@@ -109,133 +170,11 @@ function showQuestion(s){
 // ---------- CELEBRATION ----------
 function showCelebration(){
   card.innerHTML = `<h1>${config.celebration.title}</h1>
+                    <p>${config.celebration.message}</p>
                     <p>${config.celebration.emojis}</p>`;
   confetti();
-  // add subtle ARMY Easter egg emojis
-  floatEmojis([config.easterEgg]);
-}
-
-// ---------- START BUTTON ----------
-document.getElementById("startBtn").onclick = ()=>showQuestion(1);
-</script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Galentine Super Tuna 💜🍓</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
-
-  * { margin:0; padding:0; box-sizing:border-box; font-family:'Comic Neue', cursive; }
-  body { height:100vh; display:flex; justify-content:center; align-items:center;
-         background: linear-gradient(135deg,#6a0dad,#9b59b6); overflow:hidden; }
-
-  #card { background: #f5e6ff; padding:30px; border-radius:25px; text-align:center;
-          width:90%; max-width:400px; box-shadow:0 10px 25px rgba(0,0,0,0.25);
-          position:relative; z-index:1; }
-
-  h1 { font-size:24px; color:#4b0082; margin-bottom:15px; }
-  p { font-size:16px; margin-bottom:20px; color:#4b0082; }
-
-  button { padding:12px 28px; font-size:16px; border:none; border-radius:50px;
-           cursor:pointer; margin:10px; background:#9b59b6; color:white;
-           transition:0.2s; }
-  button:hover { background:#8e44ad; }
-  button:active { transform:scale(0.95); }
-
-  .emoji { position:fixed; font-size:22px; animation:floatUp 15s linear forwards; opacity:0.7; z-index:0; }
-
-  @keyframes floatUp { from { transform:translateY(0); } to { transform:translateY(-100vh); } }
-
-  .confetti-piece { position:fixed; width:10px; height:10px; background:var(--color); top:0;
-                     animation:fall 3s forwards; z-index:10; }
-  @keyframes fall { to { transform:translate(var(--x),100vh) rotate(360deg); opacity:0; } }
-</style>
-</head>
-<body>
-
-<div id="card">
-  <h1>💜 Super Tuna Galentine 💜🍓</h1>
-  <p>Are you ready for some fun? 🎶🍓</p>
-  <button id="startBtn">Start! 🎣</button>
-</div>
-
-<script>
-const config = {
-  floatingEmojis: ['💜','🍓','🎶'],
-  easterEgg: '💜 ARMY 💜',
-  questions: [
-    { text:"Will you be my Galentine buddy?", yes:"Yes! 💜", no:"No" },
-    { text:"Wanna do some Super Tuna fun? 🐟", yes:"Let's go! 🍓", no:"Maybe later" }
-  ],
-  celebration: { title:"Woohoo! Fun time! 💜", emojis:"💜🍓🎶" }
-};
-
-// ---------- FLOATING EMOJIS ----------
-function floatEmojis(extraEmojis = []) {
-  setInterval(()=>{
-    const emoji = document.createElement("div");
-    emoji.className="emoji";
-    const allEmojis = [...config.floatingEmojis, ...extraEmojis];
-    emoji.innerText = allEmojis[Math.floor(Math.random()*allEmojis.length)];
-    emoji.style.left = Math.random()*100 + "vw";
-    emoji.style.bottom = "-50px";
-    emoji.style.animationDuration = (10+Math.random()*10) + "s";
-    document.body.appendChild(emoji);
-    setTimeout(()=>emoji.remove(),15000);
-  }, 400);
-}
-floatEmojis();
-
-// ---------- CONFETTI ----------
-function confetti() {
-  const colors = ["#9b59b6","#8e44ad","#d291bc"];
-  for(let i=0;i<30;i++){
-    const c = document.createElement("div");
-    c.className="confetti-piece";
-    c.style.setProperty("--color", colors[Math.floor(Math.random()*colors.length)]);
-    c.style.setProperty("--x",(Math.random()*200-100)+"px");
-    c.style.left=Math.random()*100+"vw";
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(),3000);
-  }
-}
-
-// ---------- QUESTIONS & RUNAWAY NO ----------
-let step=0;
-const card = document.getElementById("card");
-
-function showQuestion(s){
-  step = s;
-  card.innerHTML = "";
-  const q = config.questions[s-1];
-  const p = document.createElement("p"); p.innerText = q.text;
-  const yes = document.createElement("button"); yes.innerText = q.yes;
-  const no = document.createElement("button"); no.innerText = q.no;
-
-  yes.onclick = ()=> s<config.questions.length ? showQuestion(s+1) : showCelebration();
-  no.onclick = ()=> alert("Haha, try again 😆"); // playful reaction
-
-  // runaway effect for No button
-  no.addEventListener("mouseover",()=>{
-    const x=Math.random()*180-90; const y=Math.random()*180-90;
-    no.style.transform=`translate(${x}px,${y}px)`;
-  });
-
-  card.append(p,yes,no);
-}
-
-// ---------- CELEBRATION ----------
-function showCelebration(){
-  card.innerHTML = `<h1>${config.celebration.title}</h1>
-                    <p>${config.celebration.emojis}</p>`;
-  confetti();
-  // add subtle ARMY Easter egg emojis
-  floatEmojis([config.easterEgg]);
+  heartExplosion(30);
+  floatEmojis(['💜 ARMY 💜','🎶']);
 }
 
 // ---------- START BUTTON ----------
