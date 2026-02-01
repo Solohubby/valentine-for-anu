@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Will You Be My Valentine? 💜🍓</title>
+<title>Will You Be My Galentine? 💜🍓</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
@@ -24,7 +24,7 @@
   button:hover { background:#ff8787; }
   button:active { transform:scale(0.95); }
 
-  .emoji { position:fixed; font-size:22px; animation:floatUp 15s linear forwards; opacity:0.7; z-index:0; }
+  .emoji { position:fixed; font-size:22px; animation:floatUp 15s linear forwards; opacity:0.7; z-index:0; cursor:pointer; }
 
   @keyframes floatUp { from { transform:translateY(0); } to { transform:translateY(-100vh); } }
 
@@ -32,11 +32,7 @@
                      animation:fall 3s forwards; z-index:10; }
   @keyframes fall { to { transform:translate(var(--x),100vh) rotate(360deg); opacity:0; } }
 
-  .heart-explosion {
-    position:fixed;
-    font-size:30px;
-    animation:explode 1s forwards;
-  }
+  .heart-explosion { position:fixed; font-size:30px; animation:explode 1s forwards; }
   @keyframes explode { 
     0% { transform:scale(0); opacity:1; }
     50% { transform:scale(1.5); opacity:1; }
@@ -47,8 +43,8 @@
 <body>
 
 <div id="card">
-  <h1>💜 ANU's Galentine 💜🍓</h1>
-  <p>Are you ready for some BTS fun? 🎶🍓</p>
+  <h1>💜 Galentine's Day 💜🍓</h1>
+  <p>Are you ready for some Tuna & BTS fun? 🎶🍓</p>
   <button id="startBtn">Start! 🎣</button>
 </div>
 
@@ -57,14 +53,22 @@ const config = {
   valentineName: "ANU",
   floatingEmojis: {
     hearts: ['❤️','💖','💝','💗','💓'],
-    bears: ['🧸','🐻'],
-    strawberries: ['🍓'] // 🍓 added!
+    btsMembers: ['🐨','🐹','🐱','🐿️','🐥','🐯','🐰'],
+    strawberries: ['🍓'],
+    tunas: ['🐟']
   },
   questions: [
-    { text:"Do you like me?", yes:"Yes 💜", no:"No", secret:"I don't like you, I love you! ❤️" },
-    { text:"Wanna be my Galentine buddy?", yes:"Of course! 🍓", no:"No" }
+    { text:"Do you like me?", yes:"Yes 💜", no:"No", secret:"I don't like you, I love you! 🍓" },
+    { text:"Wanna be my Galentine buddy?", yes:"Of course! 🍓", no:"No" },
+    { text:"BTS Quiz: Who is the leader of BTS?", options:["RM","Jin","Suga","J-Hope"], answer:"RM" },
+    { text:"BTS Quiz: Which member has the nickname 'Tata'?", options:["V","Jimin","Jungkook","Suga"], answer:"V" },
+    { text:"Final check: Are you ready for some BTS hearts & tunas?", yes:"Yes! 💜", no:"No" }
   ],
-  celebration: { title:"Yay! BTS Fun Time! 💖", message:"Time for hearts, strawberries & confetti! 🎁💝", emojis:"💝🎉💜🍓🎶" }
+  celebration: { 
+    title:"Yay! Let's Gooooo! 💖", 
+    message:"chamchi! Woaahh Let's go, syu peo cham chi💝", 
+    emojis:"💝🎉💜🍓🎶" 
+  }
 };
 
 // ---------- FLOATING EMOJIS ----------
@@ -72,12 +76,31 @@ function floatEmojis(extra = []) {
   setInterval(()=>{
     const emoji = document.createElement("div");
     emoji.className="emoji";
-    const all = [...config.floatingEmojis.hearts, ...config.floatingEmojis.bears, ...config.floatingEmojis.strawberries, ...extra];
+    const all = [...config.floatingEmojis.hearts, 
+                 ...config.floatingEmojis.btsMembers, 
+                 ...config.floatingEmojis.strawberries, 
+                 ...config.floatingEmojis.tunas,
+                 ...extra];
     emoji.innerText = all[Math.floor(Math.random()*all.length)];
     emoji.style.left = Math.random()*100 + "vw";
     emoji.style.bottom = "-50px";
     emoji.style.animationDuration = (10+Math.random()*10) + "s";
     document.body.appendChild(emoji);
+
+    // Interactive Tuna click
+    if(config.floatingEmojis.tunas.includes(emoji.innerText)){
+      emoji.onclick = ()=>{
+        const h = document.createElement("div");
+        h.className="heart-explosion";
+        h.style.left = emoji.offsetLeft + "px";
+        h.style.top = emoji.offsetTop + "px";
+        h.innerText = '🐟';
+        document.body.appendChild(h);
+        setTimeout(()=>h.remove(),1000);
+        emoji.remove();
+      }
+    }
+
     setTimeout(()=>emoji.remove(),15000);
   }, 400);
 }
@@ -97,14 +120,15 @@ function confetti() {
   }
 }
 
-// ---------- HEART EXPLOSION ----------
+// ---------- HEART/EMOJI EXPLOSION ----------
 function heartExplosion(count=20) {
   for(let i=0;i<count;i++){
     const heart = document.createElement("div");
     heart.className="heart-explosion";
     heart.style.left = Math.random()*window.innerWidth + "px";
     heart.style.top = Math.random()*window.innerHeight + "px";
-    heart.innerText = config.floatingEmojis.hearts[Math.floor(Math.random()*config.floatingEmojis.hearts.length)];
+    const all = [...config.floatingEmojis.hearts, ...config.floatingEmojis.btsMembers, ...config.floatingEmojis.tunas];
+    heart.innerText = all[Math.floor(Math.random()*all.length)];
     document.body.appendChild(heart);
     setTimeout(()=>heart.remove(),1000);
   }
@@ -112,76 +136,9 @@ function heartExplosion(count=20) {
 
 // ---------- FUN INTERACTION AFTER YES ----------
 function miniInteraction(callback){
-  // Floating ARMY hearts + music notes + strawberries
-  floatEmojis(['💜 ARMY 💜','🎶','🍓']);
+  floatEmojis(['💜 ARMY 💜','🎶','🍓','🐟']);
   
-  // Tap anywhere to pop a heart/strawberry
   const tapHandler = (e)=>{
     const h = document.createElement("div");
     h.className="heart-explosion";
     h.style.left = e.clientX + "px";
-    h.style.top = e.clientY + "px";
-    h.innerText = Math.random()>0.5 ? '💜' : '🍓';
-    document.body.appendChild(h);
-    setTimeout(()=>h.remove(),1000);
-  };
-  document.body.addEventListener('click', tapHandler);
-  
-  // Mini confetti burst
-  confetti();
-
-  // After 2s, remove tap event and continue
-  setTimeout(()=>{
-    document.body.removeEventListener('click', tapHandler);
-    callback();
-  },2000);
-}
-
-// ---------- QUESTIONS ----------
-let step=0;
-const card = document.getElementById("card");
-
-function showQuestion(s){
-  step = s;
-  card.innerHTML = "";
-  const q = config.questions[s-1];
-  const p = document.createElement("p"); p.innerText = q.text;
-  const yes = document.createElement("button"); yes.innerText = q.yes;
-  const no = document.createElement("button"); no.innerText = q.no;
-
-  yes.onclick = ()=>{
-    miniInteraction(()=>{
-      if(s<config.questions.length){
-        showQuestion(s+1);
-      } else {
-        showCelebration();
-      }
-    });
-  };
-  no.onclick = ()=>{ alert("Haha, try again 😆"); };
-
-  // runaway effect for No button
-  no.addEventListener("mouseover",()=>{
-    const x=Math.random()*180-90; const y=Math.random()*180-90;
-    no.style.transform=`translate(${x}px,${y}px)`;
-  });
-
-  card.append(p,yes,no);
-}
-
-// ---------- CELEBRATION ----------
-function showCelebration(){
-  card.innerHTML = `<h1>${config.celebration.title}</h1>
-                    <p>${config.celebration.message}</p>
-                    <p>${config.celebration.emojis}</p>`;
-  confetti();
-  heartExplosion(30);
-  floatEmojis(['💜 ARMY 💜','🎶','🍓']);
-}
-
-// ---------- START BUTTON ----------
-document.getElementById("startBtn").onclick = ()=>showQuestion(1);
-</script>
-
-</body>
-</html>
