@@ -57,13 +57,14 @@ const config = {
   valentineName: "ANU",
   floatingEmojis: {
     hearts: ['❤️','💖','💝','💗','💓'],
-    bears: ['🧸','🐻']
+    bears: ['🧸','🐻'],
+    strawberries: ['🍓'] // 🍓 added!
   },
   questions: [
     { text:"Do you like me?", yes:"Yes 💜", no:"No", secret:"I don't like you, I love you! ❤️" },
     { text:"Wanna be my Galentine buddy?", yes:"Of course! 🍓", no:"No" }
   ],
-  celebration: { title:"Yay! BTS Fun Time! 💖", message:"Time for hearts & confetti! 🎁💝", emojis:"💝🎉💜🍓🎶" }
+  celebration: { title:"Yay! BTS Fun Time! 💖", message:"Time for hearts, strawberries & confetti! 🎁💝", emojis:"💝🎉💜🍓🎶" }
 };
 
 // ---------- FLOATING EMOJIS ----------
@@ -71,7 +72,7 @@ function floatEmojis(extra = []) {
   setInterval(()=>{
     const emoji = document.createElement("div");
     emoji.className="emoji";
-    const all = [...config.floatingEmojis.hearts, ...config.floatingEmojis.bears, ...extra];
+    const all = [...config.floatingEmojis.hearts, ...config.floatingEmojis.bears, ...config.floatingEmojis.strawberries, ...extra];
     emoji.innerText = all[Math.floor(Math.random()*all.length)];
     emoji.style.left = Math.random()*100 + "vw";
     emoji.style.bottom = "-50px";
@@ -111,15 +112,16 @@ function heartExplosion(count=20) {
 
 // ---------- FUN INTERACTION AFTER YES ----------
 function miniInteraction(callback){
-  // Floating ARMY hearts + music notes swirl
-  floatEmojis(['💜 ARMY 💜','🎶']);
-  // Tap anywhere to pop a heart
+  // Floating ARMY hearts + music notes + strawberries
+  floatEmojis(['💜 ARMY 💜','🎶','🍓']);
+  
+  // Tap anywhere to pop a heart/strawberry
   const tapHandler = (e)=>{
     const h = document.createElement("div");
     h.className="heart-explosion";
     h.style.left = e.clientX + "px";
     h.style.top = e.clientY + "px";
-    h.innerText = '💜';
+    h.innerText = Math.random()>0.5 ? '💜' : '🍓';
     document.body.appendChild(h);
     setTimeout(()=>h.remove(),1000);
   };
@@ -174,7 +176,7 @@ function showCelebration(){
                     <p>${config.celebration.emojis}</p>`;
   confetti();
   heartExplosion(30);
-  floatEmojis(['💜 ARMY 💜','🎶']);
+  floatEmojis(['💜 ARMY 💜','🎶','🍓']);
 }
 
 // ---------- START BUTTON ----------
