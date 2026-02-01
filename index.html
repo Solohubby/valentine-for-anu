@@ -2,122 +2,439 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Galentine Fun 💜</title>
+<title>Will You Be My Valentine? 💝</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
 
   * { margin:0; padding:0; box-sizing:border-box; font-family:'Comic Neue', cursive; }
-  body { height:100vh; display:flex; justify-content:center; align-items:center; background: linear-gradient(135deg,#8e44ad,#9b59b6); overflow:hidden; }
+  body { height:100vh; display:flex; justify-content:center; align-items:center;
+         background: linear-gradient(135deg,#ffafbd,#ffc3a0); overflow:hidden; }
 
-  .card { background: #fff0ff; padding:30px; border-radius:30px; text-align:center; width:90%; max-width:400px; box-shadow:0 15px 35px rgba(0,0,0,0.25); position:relative; z-index:1; }
+  #card { background: #fff0ff; padding:30px; border-radius:25px; text-align:center;
+          width:90%; max-width:400px; box-shadow:0 10px 25px rgba(0,0,0,0.25);
+          position:relative; z-index:1; }
 
-  h1 { font-size:26px; color:#6a0dad; margin-bottom:15px; }
-  p { font-size:16px; margin-bottom:20px; color:#5e2b97; }
+  h1 { font-size:24px; color:#ff4757; margin-bottom:15px; }
+  p { font-size:16px; margin-bottom:20px; color:#ff4757; }
 
-  .buttons { position:relative; height:120px; }
-  button { padding:12px 28px; font-size:16px; border:none; border-radius:50px; cursor:pointer; margin:10px; transition:0.2s; }
+  button { padding:12px 28px; font-size:16px; border:none; border-radius:50px;
+           cursor:pointer; margin:10px; background:#ff6b6b; color:white;
+           transition:0.2s; }
+  button:hover { background:#ff8787; }
   button:active { transform:scale(0.95); }
-  #yesBtn { background:#9b59b6; color:white; box-shadow:0 8px 15px rgba(155,89,182,0.5); }
-  #noBtn { background:#eee; position:absolute; left:150px; top:0; }
 
-  .emoji { position:fixed; font-size:20px; animation:floatUp 6s linear infinite; opacity:0.7; z-index:0; }
-  @keyframes floatUp { from { transform:translateY(0) } to { transform:translateY(-110vh) } }
+  .emoji { position:fixed; font-size:22px; animation:floatUp 15s linear forwards; opacity:0.7; z-index:0; }
 
-  .confetti-piece { position:fixed; width:10px; height:10px; background:var(--color); top:0; animation:fall 3s forwards; z-index:10; }
-  @keyframes fall { to { transform:translate(var(--x),100vh) rotate(360deg); opacity:0 } }
-
-  .surprise { margin-top:15px; font-size:16px; color:#8e44ad; animation:fadeIn 1.5s ease forwards; opacity:0; }
+  .surprise { margin-top:10px; font-size:16px; color:#ff4757; animation:fadeIn 1.5s ease forwards; opacity:0; }
   @keyframes fadeIn { to { opacity:1; } }
+  @keyframes floatUp { from { transform:translateY(0); } to { transform:translateY(-100vh); } }
+
+  .confetti-piece { position:fixed; width:10px; height:10px; background:var(--color); top:0;
+                     animation:fall 3s forwards; z-index:10; }
+  @keyframes fall { to { transform:translate(var(--x),100vh) rotate(360deg); opacity:0; } }
 </style>
 </head>
 <body>
 
-<div class="card" id="card">
-  <h1>💜 Anu & Friends 💜</h1>
-  <p>Ready to catch some Super Tuna fun? 🐟</p>
-  <div class="buttons">
-    <button id="yesBtn">Catch it! 🎣</button>
-    <button id="noBtn">Nope 🙈</button>
-  </div>
+<div id="card">
+  <h1>💜 ANU & Friends 💜</h1>
+  <p>Ready for some Super Tuna fun? 🐟</p>
+  <button id="yesBtn">Catch it! 🎣</button>
+  <button id="noBtn">Nope 🙈</button>
 </div>
 
 <script>
-const yesBtn = document.getElementById("yesBtn");
-const noBtn = document.getElementById("noBtn");
-const card = document.getElementById("card");
+// ---------- CONFIG ----------
+const config = {
+  valentineName: "ANU",
+  floatingEmojis: {
+    hearts: ['❤️','💖','💝','💗','💓'],
+    bears: ['🧸','🐻']
+  },
+  questions: {
+    first: { text:"Do you like me?", yesBtn:"Yes", noBtn:"No", secretAnswer:"I don't like you, I love you! ❤️" },
+    second: { text:"How much do you love me?", startText:"This much!", nextBtn:"Next ❤️" },
+    third: { text:"Will you be my Valentine...?", yesBtn:"Yes!", noBtn:"No" }
+  },
+  celebration: { title:"Yay! Best friends forever! 💜", message:"Time for Super Tuna dance! 🐟💃", emojis:"💖🐟🧸💜" }
+};
 
-// NO button runs away like a slippery fish
-function moveNo() {
-  const x = Math.random()*180-90;
-  const y = Math.random()*180-90;
-  noBtn.style.transform = `translate(${x}px, ${y}px)`;
-}
-noBtn.addEventListener("mouseover", moveNo);
-noBtn.addEventListener("touchstart", moveNo);
-
-// YES button starts the Super Tuna game!
-yesBtn.addEventListener("click", () => {
-  card.innerHTML = `
-    <h1>🐟 Super Tuna Caught! 🐟</h1>
-    <div id="surprise"></div>
-    <p>Keep tapping to throw more fun! 💜</p>
-  `;
-  createEmojis();
-  createConfetti();
-  showGameMessages();
-});
-
-// Floating emojis (hearts + tuna)
-function createEmojis() {
+// ---------- FLOATING EMOJIS ----------
+function floatEmojis() {
   setInterval(()=>{
     const emoji = document.createElement("div");
-    emoji.className = "emoji";
-    emoji.innerHTML = Math.random() > 0.5 ? "💜" : "🐟";
-    emoji.style.left = Math.random()*100+"vw";
-    emoji.style.animationDuration = (Math.random()*3+4)+"s";
+    emoji.className="emoji";
+    emoji.innerText = Math.random() > 0.5 ? config.floatingEmojis.hearts[Math.floor(Math.random()*config.floatingEmojis.hearts.length)]
+                                          : config.floatingEmojis.bears[Math.floor(Math.random()*config.floatingEmojis.bears.length)];
+    emoji.style.left = Math.random()*100 + "vw";
+    emoji.style.bottom = "-50px";
+    emoji.style.animationDuration = (10+Math.random()*10) + "s";
     document.body.appendChild(emoji);
-    setTimeout(()=>emoji.remove(),7000);
-  },250);
+    setTimeout(()=>emoji.remove(),15000);
+  }, 300);
 }
+floatEmojis();
 
-// Confetti explosion
-function createConfetti() {
-  const colors = ["#9b59b6","#8e44ad","#d291bc","#c39bd3"];
-  for(let i=0;i<50;i++){
-    const confetti = document.createElement("div");
-    confetti.className="confetti-piece";
-    confetti.style.setProperty("--color",colors[Math.floor(Math.random()*colors.length)]);
-    confetti.style.setProperty("--x",(Math.random()*200-100)+"px");
-    confetti.style.left=Math.random()*100+"vw";
-    document.body.appendChild(confetti);
-    setTimeout(()=>confetti.remove(),3000);
+// ---------- CONFETTI ----------
+function confetti() {
+  const colors = ["#ff6b6b","#ff8787","#ff4757","#ffc3a0"];
+  for(let i=0;i<40;i++){
+    const c = document.createElement("div");
+    c.className="confetti-piece";
+    c.style.setProperty("--color", colors[Math.floor(Math.random()*colors.length)]);
+    c.style.setProperty("--x",(Math.random()*200-100)+"px");
+    c.style.left=Math.random()*100+"vw";
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
   }
 }
 
-// Show short fun game messages
-function showGameMessages() {
-  const messages = [
-    "Wow, you caught a tuna! 🐟",
-    "Galentine level: Expert 💜",
-    "Dance like Jin in Super Tuna 🕺",
-    "Friendship power: MAX! 🌟"
-  ];
-  const surpriseDiv = document.getElementById("surprise");
-  let index = 0;
-  
-  const interval = setInterval(()=>{
-    if(index < messages.length) {
-      const p = document.createElement("p");
-      p.className = "surprise";
-      p.innerText = messages[index];
-      surpriseDiv.appendChild(p);
-      index++;
-    } else {
-      clearInterval(interval);
-    }
-  }, 1400); // faster game pace
+// ---------- QUESTIONS LOGIC ----------
+let questionStep = 1;
+const card = document.getElementById("card");
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+
+function showQuestion(step){
+  if(step===1){
+    card.innerHTML = `<p>${config.questions.first.text}</p>
+                      <button id="yesBtn">${config.questions.first.yesBtn}</button>
+                      <button id="noBtn">${config.questions.first.noBtn}</button>`;
+    document.getElementById("yesBtn").onclick = ()=>showQuestion(2);
+    document.getElementById("noBtn").onclick = ()=>{ alert(config.questions.first.secretAnswer); showQuestion(2); }
+  } else if(step===2){
+    card.innerHTML = `<p>${config.questions.second.text}</p>
+                      <button id="nextBtn">${config.questions.second.nextBtn}</button>`;
+    document.getElementById("nextBtn").onclick = ()=>showQuestion(3);
+  } else if(step===3){
+    card.innerHTML = `<p>${config.questions.third.text}</p>
+                      <button id="yesBtn">${config.questions.third.yesBtn}</button>
+                      <button id="noBtn">${config.questions.third.noBtn}</button>`;
+    document.getElementById("yesBtn").onclick = ()=>showCelebration();
+    document.getElementById("noBtn").onclick = ()=>alert("Oops! Try again 😉");
+  }
 }
+
+// ---------- NO BUTTON RUNAWAY ----------
+function moveNo(btn){
+  btn.addEventListener("mouseover",()=>{
+    const x=Math.random()*180-90;
+    const y=Math.random()*180-90;
+    btn.style.transform=`translate(${x}px,${y}px)`;
+  });
+  btn.addEventListener("touchstart",()=>{
+    const x=Math.random()*180-90;
+    const y=Math.random()*180-90;
+    btn.style.transform=`translate(${x}px,${y}px)`;
+  });
+}
+moveNo(noBtn);
+
+// ---------- CELEBRATION ----------
+function showCelebration(){
+  card.innerHTML = `<h1>${config.celebration.title}</h1>
+                    <p>${config.celebration.message}</p>
+                    <p>${config.celebration.emojis}</p>`;
+  confetti();
+}
+
+// ---------- INITIAL YES BUTTON ----------
+yesBtn.onclick = ()=>showQuestion(1);
+</script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Will You Be My Valentine? 💝</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
+
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Comic Neue', cursive; }
+  body { height:100vh; display:flex; justify-content:center; align-items:center;
+         background: linear-gradient(135deg,#ffafbd,#ffc3a0); overflow:hidden; }
+
+  #card { background: #fff0ff; padding:30px; border-radius:25px; text-align:center;
+          width:90%; max-width:400px; box-shadow:0 10px 25px rgba(0,0,0,0.25);
+          position:relative; z-index:1; }
+
+  h1 { font-size:24px; color:#ff4757; margin-bottom:15px; }
+  p { font-size:16px; margin-bottom:20px; color:#ff4757; }
+
+  button { padding:12px 28px; font-size:16px; border:none; border-radius:50px;
+           cursor:pointer; margin:10px; background:#ff6b6b; color:white;
+           transition:0.2s; }
+  button:hover { background:#ff8787; }
+  button:active { transform:scale(0.95); }
+
+  .emoji { position:fixed; font-size:22px; animation:floatUp 15s linear forwards; opacity:0.7; z-index:0; }
+
+  .surprise { margin-top:10px; font-size:16px; color:#ff4757; animation:fadeIn 1.5s ease forwards; opacity:0; }
+  @keyframes fadeIn { to { opacity:1; } }
+  @keyframes floatUp { from { transform:translateY(0); } to { transform:translateY(-100vh); } }
+
+  .confetti-piece { position:fixed; width:10px; height:10px; background:var(--color); top:0;
+                     animation:fall 3s forwards; z-index:10; }
+  @keyframes fall { to { transform:translate(var(--x),100vh) rotate(360deg); opacity:0; } }
+</style>
+</head>
+<body>
+
+<div id="card">
+  <h1>💜 ANU & Friends 💜</h1>
+  <p>Ready for some Super Tuna fun? 🐟</p>
+  <button id="yesBtn">Catch it! 🎣</button>
+  <button id="noBtn">Nope 🙈</button>
+</div>
+
+<script>
+// ---------- CONFIG ----------
+const config = {
+  valentineName: "ANU",
+  floatingEmojis: {
+    hearts: ['❤️','💖','💝','💗','💓'],
+    bears: ['🧸','🐻']
+  },
+  questions: {
+    first: { text:"Do you like me?", yesBtn:"Yes", noBtn:"No", secretAnswer:"I don't like you, I love you! ❤️" },
+    second: { text:"How much do you love me?", startText:"This much!", nextBtn:"Next ❤️" },
+    third: { text:"Will you be my Valentine...?", yesBtn:"Yes!", noBtn:"No" }
+  },
+  celebration: { title:"Yay! Best friends forever! 💜", message:"Time for Super Tuna dance! 🐟💃", emojis:"💖🐟🧸💜" }
+};
+
+// ---------- FLOATING EMOJIS ----------
+function floatEmojis() {
+  setInterval(()=>{
+    const emoji = document.createElement("div");
+    emoji.className="emoji";
+    emoji.innerText = Math.random() > 0.5 ? config.floatingEmojis.hearts[Math.floor(Math.random()*config.floatingEmojis.hearts.length)]
+                                          : config.floatingEmojis.bears[Math.floor(Math.random()*config.floatingEmojis.bears.length)];
+    emoji.style.left = Math.random()*100 + "vw";
+    emoji.style.bottom = "-50px";
+    emoji.style.animationDuration = (10+Math.random()*10) + "s";
+    document.body.appendChild(emoji);
+    setTimeout(()=>emoji.remove(),15000);
+  }, 300);
+}
+floatEmojis();
+
+// ---------- CONFETTI ----------
+function confetti() {
+  const colors = ["#ff6b6b","#ff8787","#ff4757","#ffc3a0"];
+  for(let i=0;i<40;i++){
+    const c = document.createElement("div");
+    c.className="confetti-piece";
+    c.style.setProperty("--color", colors[Math.floor(Math.random()*colors.length)]);
+    c.style.setProperty("--x",(Math.random()*200-100)+"px");
+    c.style.left=Math.random()*100+"vw";
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
+}
+
+// ---------- QUESTIONS LOGIC ----------
+let questionStep = 1;
+const card = document.getElementById("card");
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+
+function showQuestion(step){
+  if(step===1){
+    card.innerHTML = `<p>${config.questions.first.text}</p>
+                      <button id="yesBtn">${config.questions.first.yesBtn}</button>
+                      <button id="noBtn">${config.questions.first.noBtn}</button>`;
+    document.getElementById("yesBtn").onclick = ()=>showQuestion(2);
+    document.getElementById("noBtn").onclick = ()=>{ alert(config.questions.first.secretAnswer); showQuestion(2); }
+  } else if(step===2){
+    card.innerHTML = `<p>${config.questions.second.text}</p>
+                      <button id="nextBtn">${config.questions.second.nextBtn}</button>`;
+    document.getElementById("nextBtn").onclick = ()=>showQuestion(3);
+  } else if(step===3){
+    card.innerHTML = `<p>${config.questions.third.text}</p>
+                      <button id="yesBtn">${config.questions.third.yesBtn}</button>
+                      <button id="noBtn">${config.questions.third.noBtn}</button>`;
+    document.getElementById("yesBtn").onclick = ()=>showCelebration();
+    document.getElementById("noBtn").onclick = ()=>alert("Oops! Try again 😉");
+  }
+}
+
+// ---------- NO BUTTON RUNAWAY ----------
+function moveNo(btn){
+  btn.addEventListener("mouseover",()=>{
+    const x=Math.random()*180-90;
+    const y=Math.random()*180-90;
+    btn.style.transform=`translate(${x}px,${y}px)`;
+  });
+  btn.addEventListener("touchstart",()=>{
+    const x=Math.random()*180-90;
+    const y=Math.random()*180-90;
+    btn.style.transform=`translate(${x}px,${y}px)`;
+  });
+}
+moveNo(noBtn);
+
+// ---------- CELEBRATION ----------
+function showCelebration(){
+  card.innerHTML = `<h1>${config.celebration.title}</h1>
+                    <p>${config.celebration.message}</p>
+                    <p>${config.celebration.emojis}</p>`;
+  confetti();
+}
+
+// ---------- INITIAL YES BUTTON ----------
+yesBtn.onclick = ()=>showQuestion(1);
+</script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Will You Be My Valentine? 💝</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
+
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Comic Neue', cursive; }
+  body { height:100vh; display:flex; justify-content:center; align-items:center;
+         background: linear-gradient(135deg,#ffafbd,#ffc3a0); overflow:hidden; }
+
+  #card { background: #fff0ff; padding:30px; border-radius:25px; text-align:center;
+          width:90%; max-width:400px; box-shadow:0 10px 25px rgba(0,0,0,0.25);
+          position:relative; z-index:1; }
+
+  h1 { font-size:24px; color:#ff4757; margin-bottom:15px; }
+  p { font-size:16px; margin-bottom:20px; color:#ff4757; }
+
+  button { padding:12px 28px; font-size:16px; border:none; border-radius:50px;
+           cursor:pointer; margin:10px; background:#ff6b6b; color:white;
+           transition:0.2s; }
+  button:hover { background:#ff8787; }
+  button:active { transform:scale(0.95); }
+
+  .emoji { position:fixed; font-size:22px; animation:floatUp 15s linear forwards; opacity:0.7; z-index:0; }
+
+  .surprise { margin-top:10px; font-size:16px; color:#ff4757; animation:fadeIn 1.5s ease forwards; opacity:0; }
+  @keyframes fadeIn { to { opacity:1; } }
+  @keyframes floatUp { from { transform:translateY(0); } to { transform:translateY(-100vh); } }
+
+  .confetti-piece { position:fixed; width:10px; height:10px; background:var(--color); top:0;
+                     animation:fall 3s forwards; z-index:10; }
+  @keyframes fall { to { transform:translate(var(--x),100vh) rotate(360deg); opacity:0; } }
+</style>
+</head>
+<body>
+
+<div id="card">
+  <h1>💜 ANU & Friends 💜</h1>
+  <p>Ready for some Super Tuna fun? 🐟</p>
+  <button id="yesBtn">Catch it! 🎣</button>
+  <button id="noBtn">Nope 🙈</button>
+</div>
+
+<script>
+// ---------- CONFIG ----------
+const config = {
+  valentineName: "ANU",
+  floatingEmojis: {
+    hearts: ['❤️','💖','💝','💗','💓'],
+    bears: ['🧸','🐻']
+  },
+  questions: {
+    first: { text:"Do you like me?", yesBtn:"Yes", noBtn:"No", secretAnswer:"I don't like you, I love you! ❤️" },
+    second: { text:"How much do you love me?", startText:"This much!", nextBtn:"Next ❤️" },
+    third: { text:"Will you be my Valentine...?", yesBtn:"Yes!", noBtn:"No" }
+  },
+  celebration: { title:"Yay! Best friends forever! 💜", message:"Time for Super Tuna dance! 🐟💃", emojis:"💖🐟🧸💜" }
+};
+
+// ---------- FLOATING EMOJIS ----------
+function floatEmojis() {
+  setInterval(()=>{
+    const emoji = document.createElement("div");
+    emoji.className="emoji";
+    emoji.innerText = Math.random() > 0.5 ? config.floatingEmojis.hearts[Math.floor(Math.random()*config.floatingEmojis.hearts.length)]
+                                          : config.floatingEmojis.bears[Math.floor(Math.random()*config.floatingEmojis.bears.length)];
+    emoji.style.left = Math.random()*100 + "vw";
+    emoji.style.bottom = "-50px";
+    emoji.style.animationDuration = (10+Math.random()*10) + "s";
+    document.body.appendChild(emoji);
+    setTimeout(()=>emoji.remove(),15000);
+  }, 300);
+}
+floatEmojis();
+
+// ---------- CONFETTI ----------
+function confetti() {
+  const colors = ["#ff6b6b","#ff8787","#ff4757","#ffc3a0"];
+  for(let i=0;i<40;i++){
+    const c = document.createElement("div");
+    c.className="confetti-piece";
+    c.style.setProperty("--color", colors[Math.floor(Math.random()*colors.length)]);
+    c.style.setProperty("--x",(Math.random()*200-100)+"px");
+    c.style.left=Math.random()*100+"vw";
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
+}
+
+// ---------- QUESTIONS LOGIC ----------
+let questionStep = 1;
+const card = document.getElementById("card");
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+
+function showQuestion(step){
+  if(step===1){
+    card.innerHTML = `<p>${config.questions.first.text}</p>
+                      <button id="yesBtn">${config.questions.first.yesBtn}</button>
+                      <button id="noBtn">${config.questions.first.noBtn}</button>`;
+    document.getElementById("yesBtn").onclick = ()=>showQuestion(2);
+    document.getElementById("noBtn").onclick = ()=>{ alert(config.questions.first.secretAnswer); showQuestion(2); }
+  } else if(step===2){
+    card.innerHTML = `<p>${config.questions.second.text}</p>
+                      <button id="nextBtn">${config.questions.second.nextBtn}</button>`;
+    document.getElementById("nextBtn").onclick = ()=>showQuestion(3);
+  } else if(step===3){
+    card.innerHTML = `<p>${config.questions.third.text}</p>
+                      <button id="yesBtn">${config.questions.third.yesBtn}</button>
+                      <button id="noBtn">${config.questions.third.noBtn}</button>`;
+    document.getElementById("yesBtn").onclick = ()=>showCelebration();
+    document.getElementById("noBtn").onclick = ()=>alert("Oops! Try again 😉");
+  }
+}
+
+// ---------- NO BUTTON RUNAWAY ----------
+function moveNo(btn){
+  btn.addEventListener("mouseover",()=>{
+    const x=Math.random()*180-90;
+    const y=Math.random()*180-90;
+    btn.style.transform=`translate(${x}px,${y}px)`;
+  });
+  btn.addEventListener("touchstart",()=>{
+    const x=Math.random()*180-90;
+    const y=Math.random()*180-90;
+    btn.style.transform=`translate(${x}px,${y}px)`;
+  });
+}
+moveNo(noBtn);
+
+// ---------- CELEBRATION ----------
+function showCelebration(){
+  card.innerHTML = `<h1>${config.celebration.title}</h1>
+                    <p>${config.celebration.message}</p>
+                    <p>${config.celebration.emojis}</p>`;
+  confetti();
+}
+
+// ---------- INITIAL YES BUTTON ----------
+yesBtn.onclick = ()=>showQuestion(1);
 </script>
 
 </body>
