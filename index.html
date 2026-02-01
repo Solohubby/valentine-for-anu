@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Will You Be My Galentine? 💜🍓</title>
+<title>Galentine's Day 💜🍓🐟</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
@@ -17,6 +17,7 @@
 
   h1 { font-size:24px; color:#ff4757; margin-bottom:15px; }
   p { font-size:16px; margin-bottom:20px; color:#ff4757; }
+  .step { font-size:14px; color:#ff6b6b; margin-bottom:10px; }
 
   button { padding:12px 28px; font-size:16px; border:none; border-radius:50px;
            cursor:pointer; margin:10px; background:#ff6b6b; color:white;
@@ -33,19 +34,15 @@
   @keyframes fall { to { transform:translate(var(--x),100vh) rotate(360deg); opacity:0; } }
 
   .heart-explosion { position:fixed; font-size:30px; animation:explode 1s forwards; }
-  @keyframes explode { 
-    0% { transform:scale(0); opacity:1; }
-    50% { transform:scale(1.5); opacity:1; }
-    100% { transform:scale(0); opacity:0; }
-  }
+  @keyframes explode { 0% { transform:scale(0); opacity:1; } 50% { transform:scale(1.5); opacity:1; } 100% { transform:scale(0); opacity:0; } }
 </style>
 </head>
 <body>
 
 <div id="card">
-  <h1>💜 Galentine's Day 💜🍓</h1>
-  <p>Are you ready for some Tuna & BTS fun? 🎶🍓</p>
-  <button id="startBtn">Start! 🎣</button>
+  <h1>💜 Galentine's Day 💜🍓🐟</h1>
+  <p>Are you ready for some syu peo cham chi? 🐟🍓</p>
+  <button id="startBtn">Start! 🐟🍓</button>
 </div>
 
 <script>
@@ -59,15 +56,15 @@ const config = {
   },
   questions: [
     { text:"Do you like me?", yes:"Yes 💜", no:"No", secret:"I don't like you, I love you! 🍓" },
-    { text:"Wanna be my Galentine buddy?", yes:"Of course! 🍓", no:"No" },
-    { text:"BTS Quiz: Who is the leader of BTS?", options:["RM","Jin","Suga","J-Hope"], answer:"RM" },
-    { text:"BTS Quiz: Which member has the nickname 'Tata'?", options:["V","Jimin","Jungkook","Suga"], answer:"V" },
+    { text:"Wanna be my Galentine?", yes:"Of course! 🍓", no:"DUH" },
+    { text:"BTS Quiz: Who was the last member to join BTS?", options:["V","Jin","Jimin","J-Hope"], answer:"Jimin" },
+    { text:"BTS Quiz: Which one of these songs is NOT an original Japanese single?", options:["Save Me","Lights","Stay Gold","Film out"], answer:"Save Me" },
     { text:"Final check: Are you ready for some BTS hearts & tunas?", yes:"Yes! 💜", no:"No" }
   ],
   celebration: { 
-    title:"Yay! Let's Gooooo! 💖", 
+    title:"Yay! Let's Goooo! 💖", 
     message:"chamchi! Woaahh Let's go, syu peo cham chi💝", 
-    emojis:"💝🎉💜🍓🎶" 
+    emojis:"🐟🎉💜🍓🎶" 
   }
 };
 
@@ -94,7 +91,8 @@ function floatEmojis(extra = []) {
         h.className="heart-explosion";
         h.style.left = emoji.offsetLeft + "px";
         h.style.top = emoji.offsetTop + "px";
-        h.innerText = '🐟';
+        const items = [...config.floatingEmojis.hearts, ...config.floatingEmojis.btsMembers];
+        h.innerText = items[Math.floor(Math.random()*items.length)];
         document.body.appendChild(h);
         setTimeout(()=>h.remove(),1000);
         emoji.remove();
@@ -134,11 +132,96 @@ function heartExplosion(count=20) {
   }
 }
 
-// ---------- FUN INTERACTION AFTER YES ----------
+// ---------- MINI INTERACTION ----------
 function miniInteraction(callback){
-  floatEmojis(['💜 ARMY 💜','🎶','🍓','🐟']);
-  
+  floatEmojis(['🐟 chamchimyeon eotteohali 🐟','🎶','🍓','🐟']);
   const tapHandler = (e)=>{
     const h = document.createElement("div");
     h.className="heart-explosion";
     h.style.left = e.clientX + "px";
+    h.style.top = e.clientY + "px";
+    const all = [...config.floatingEmojis.hearts, ...config.floatingEmojis.btsMembers, ...config.floatingEmojis.strawberries, ...config.floatingEmojis.tunas];
+    h.innerText = all[Math.floor(Math.random()*all.length)];
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),1000);
+  };
+  document.body.addEventListener('click', tapHandler);
+  confetti();
+  setTimeout(()=>{
+    document.body.removeEventListener('click', tapHandler);
+    callback();
+  },2000);
+}
+
+// ---------- QUESTIONS ----------
+let step=0;
+const card = document.getElementById("card");
+
+// Shuffle BTS quiz questions
+function shuffleArray(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+// Separate normal questions and quiz questions
+const normalQuestions = config.questions.filter(q=>!q.options);
+const quizQuestions = shuffleArray(config.questions.filter(q=>q.options));
+const allQuestions = [...normalQuestions.slice(0,2), ...quizQuestions, ...normalQuestions.slice(2)];
+
+function showQuestion(s){
+  step = s;
+  const q = allQuestions[s-1];
+  card.innerHTML = `<div class="step">Step ${s} of ${allQuestions.length}</div>`;
+
+  if(q.options){
+    // Quiz type
+    const p = document.createElement("p"); p.innerText = q.text;
+    card.appendChild(p);
+    q.options.forEach(opt=>{
+      const btn = document.createElement("button");
+      btn.innerText = opt;
+      btn.onclick = ()=>{
+        if(opt === q.answer){
+          miniInteraction(()=> s<allQuestions.length ? showQuestion(s+1) : showCelebration());
+        } else {
+          alert("BITCH HOW DARE YOU");
+        }
+      }
+      card.appendChild(btn);
+    });
+  } else {
+    // Yes/No type
+    const p = document.createElement("p"); p.innerText = q.text;
+    const yes = document.createElement("button"); yes.innerText = q.yes;
+    const no = document.createElement("button"); no.innerText = q.no;
+
+    yes.onclick = ()=>{ miniInteraction(()=> s<allQuestions.length ? showQuestion(s+1) : showCelebration()); };
+    no.onclick = ()=>{ alert("Womp Womp"); };
+    no.addEventListener("mouseover",()=>{
+      const x=Math.random()*180-90; const y=Math.random()*180-90;
+      no.style.transform=`translate(${x}px,${y}px)`;
+    });
+
+    card.append(p,yes,no);
+  }
+}
+
+// ---------- CELEBRATION ----------
+function showCelebration(){
+  card.innerHTML = `<h1>${config.celebration.title}</h1>
+                    <p>${config.celebration.message}</p>
+                    <p>${config.celebration.emojis}</p>`;
+  confetti();
+  heartExplosion(30);
+  floatEmojis(['💜 ARMY 💜','🎶','🍓','🐟']);
+}
+
+// ---------- START BUTTON ----------
+document.getElementById("startBtn").onclick = ()=>showQuestion(1);
+</script>
+
+</body>
+</html>
