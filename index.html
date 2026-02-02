@@ -59,11 +59,11 @@ const config = {
     { text:"Wanna be my Galentine?", yes:"Of course! 🍓", no:"NO???" },
     { text:"BTS Quiz: Who was the last member to join BTS?", options:["V","Jin","Jimin","J-Hope"], answer:"Jimin" },
     { text:"BTS Quiz: Which one of these songs is NOT an original Japanese single?", options:["Save Me","Lights","Stay Gold","Film out"], answer:"Save Me" },
-    { text:"Final check: Are you ready for some fun?", yes:"Yes! 💜", no:"No" }
+    { text:"Final check: Are you ready for some "Nom Nom"?", yes:"Yes! 💜", no:"No?????" }
   ],
   celebration: { 
     title:"Yay! Let's Goooo! 💖", 
-    message:"Chamchi! Woaahh Let's go, syu peo cham chi💝", 
+    message:"Chamchi! Woaahh.... Let's go, syu peo cham chi💝", 
     emojis:"🐟🎉💜🍓🎶" 
   }
 };
@@ -199,7 +199,7 @@ function showQuestion(s){
     const no = document.createElement("button"); no.innerText = q.no;
 
     yes.onclick = ()=>{ miniInteraction(()=> s<allQuestions.length ? showQuestion(s+1) : showCelebration()); };
-    no.onclick = ()=>{ alert("Womp Womp"); };
+    no.onclick = ()=>{ alert("GO CRY ABOUT IT"); };
     no.addEventListener("mouseover",()=>{
       const x=Math.random()*180-90; const y=Math.random()*180-90;
       no.style.transform=`translate(${x}px,${y}px)`;
