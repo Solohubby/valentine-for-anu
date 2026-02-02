@@ -4,58 +4,32 @@
 <meta charset="UTF-8">
 <title>Be My Galentine 💜🍓🐟</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
 
 <style>
-/* ===== Basic Reset ===== */
 * { margin:0; padding:0; box-sizing:border-box; font-family:'Comic Neue', cursive; }
 body { display:flex; justify-content:center; align-items:center; height:100vh; background:linear-gradient(135deg,#ffafbd,#ffc3a0); overflow:hidden; }
-
-/* ===== CARD ===== */
 #card {
   background:#fff0f5; padding:30px; border-radius:25px; text-align:center;
   width:90%; max-width:400px; box-shadow:0 10px 25px rgba(0,0,0,0.25);
   color:#ff4757; position:relative; z-index:1;
 }
-
 h1 { font-size:24px; margin-bottom:15px; }
 p { font-size:16px; margin-bottom:20px; }
 .step { font-size:14px; margin-bottom:10px; color:#ff6b6b; }
-
 button {
   padding:12px 28px; font-size:16px; border:none; border-radius:50px;
   cursor:pointer; margin:10px; background:#ff6b6b; color:white;
 }
 button:hover { background:#ff8787; }
-
-/* ===== FLOATING EMOJIS ===== */
-.emoji {
-  position:fixed; font-size:22px; animation:floatUp 15s linear forwards;
-  opacity:.7; z-index:0; cursor:grab;
-}
+.emoji { position:fixed; font-size:22px; animation:floatUp 15s linear forwards; opacity:.7; z-index:0; cursor:grab; }
 .emoji:hover { transform:scale(1.6); opacity:1; }
-
 @keyframes floatUp { from{transform:translateY(0);} to{transform:translateY(-100vh);} }
-
-/* ===== CONFETTI ===== */
-.confetti-piece {
-  position:fixed; width:10px;height:10px; background:var(--color);
-  top:0; animation:fall 3s forwards; z-index:10;
-}
+.confetti-piece { position:fixed; width:10px;height:10px; background:var(--color); top:0; animation:fall 3s forwards; z-index:10; }
 @keyframes fall { to{transform:translate(var(--x),100vh) rotate(360deg); opacity:0;} }
-
-/* ===== HEART EXPLOSIONS ===== */
-.heart-explosion {
-  position:fixed; font-size:30px; animation:explode 1s forwards;
-}
+.heart-explosion { position:fixed; font-size:30px; animation:explode 1s forwards; }
 @keyframes explode { 0%{transform:scale(0);opacity:1} 50%{transform:scale(1.5)} 100%{transform:scale(0);opacity:0} }
-
-/* ===== JIN POP ===== */
-#jinPop {
-  position:fixed; bottom:-300px; left:50%; transform:translateX(-50%);
-  font-size:80px; transition:0.6s; z-index:9999; pointer-events:none;
-}
+#jinPop { position:fixed; bottom:-300px; left:50%; transform:translateX(-50%); font-size:80px; transition:0.6s; z-index:9999; pointer-events:none; }
 </style>
 </head>
 
@@ -70,7 +44,6 @@ button:hover { background:#ff8787; }
 <audio id="valentineSong" src="https://raw.githubusercontent.com/Solohubby/valentine-for-anu/main/mySong.mp3.mp3" loop></audio>
 
 <script>
-// ===== CONFIG =====
 const config = {
   floatingEmojis: {
     hearts:['❤️','💖','💝','💗','💓'],
@@ -89,15 +62,13 @@ const config = {
   ],
   celebration:{
     title:"Yay! Let's Gooooo! 💖",
-    message:"Chamchi! Woaahh.... Let's go, syu peo cham chi",
+    message:"Chamchi! Woaahh.... Let's go, syu peo cham chi ✨💜 Carat vibes! 🐟🎉",
     emojis:"🐟🎉💜🍓🎶"
   }
 };
 
-// ===== STATE =====
 let step=0, perfectRun=true, clickCombo=[], comboTimer=null, tunaCount=0;
 
-// ===== UTILITY =====
 function confetti(){
   const colors=["#ff6b6b","#ff8787","#ffb6b9"];
   for(let i=0;i<40;i++){
@@ -127,7 +98,6 @@ function jinEasterEgg(){
   }
 }
 
-// ===== QUESTIONS =====
 const card=document.getElementById("card");
 
 function showQuestion(){
@@ -150,32 +120,18 @@ function showQuestion(){
   }
 }
 
-// ===== CELEBRATION =====
 function showCelebration(){
-  card.innerHTML = `
-    <h1>${config.celebration.title}</h1>
-    <p>${config.celebration.message}</p>
-    <p>${config.celebration.emojis}</p>
-  `;
-  
-  // Initial confetti and hearts
-  confetti(); 
-  heartExplosion(30);
-  
-  if(perfectRun){
+  card.innerHTML=`<h1>${config.celebration.title}</h1><p>${config.celebration.message}</p><p>${config.celebration.emojis}</p>`;
+  confetti(); heartExplosion(30);
+  if(perfectRun){ 
     setTimeout(()=>{
-      confetti(); 
-      heartExplosion(40); 
-      // Extra floating emojis
+      confetti(); heartExplosion(40); 
       for(let i=0;i<10;i++) spawnFloatingEmoji(['💜','🐟','🍓','✨']);
-    }, 800);
+    },800);
   }
-
-  // Keep floating emojis and golden tunas indefinitely
-  setInterval(() => spawnFloatingEmoji(['💜','🐟','🍓','✨']), 500);
+  setInterval(()=>spawnFloatingEmoji(['💜','🐟','🍓','✨']),500);
 }
 
-// ===== CLICK COMBO =====
 card.addEventListener("click",()=>{
   clickCombo.push(Date.now());
   clearTimeout(comboTimer); comboTimer=setTimeout(()=>clickCombo=[],1000);
@@ -184,64 +140,29 @@ card.addEventListener("click",()=>{
   if(clickCombo.length===7) alert("💜 WORLD WIDE HANDSOME ACTIVATED 💜");
 });
 
-// ===== AUDIO =====
 const song=document.getElementById("valentineSong");
 document.getElementById("startBtn").onclick=()=>{
   song.play().catch(()=>{});
   showQuestion();
 };
 
-// ===== FLOATING EMOJIS & GOLDEN TUNA =====
-const floatingConfig = {
-  interval: 400,
-  duration: 15000,
-  goldenTunaChance: 0.05,
-  baseEmojis: [
-    ...config.floatingEmojis.hearts,
-    ...config.floatingEmojis.btsMembers,
-    ...config.floatingEmojis.strawberries,
-    ...config.floatingEmojis.tunas
-  ]
-};
+const floatingConfig = { interval:400, duration:15000, goldenTunaChance:0.05, baseEmojis:[...config.floatingEmojis.hearts,...config.floatingEmojis.btsMembers,...config.floatingEmojis.strawberries,...config.floatingEmojis.tunas]};
 
-function spawnFloatingEmoji(extra = []){
-  const e=document.createElement("div");
-  e.className="emoji";
-  const allEmojis=[...floatingConfig.baseEmojis,...extra];
-  e.innerText=allEmojis[Math.floor(Math.random()*allEmojis.length)];
-  e.style.left=Math.random()*100+"vw";
-  e.style.bottom="-50px";
-  e.style.animationDuration=(10+Math.random()*10)+"s";
-  document.body.appendChild(e);
-  if(Math.random() < floatingConfig.goldenTunaChance) spawnGoldenTuna();
+function spawnFloatingEmoji(extra=[]){
+  const e=document.createElement("div"); e.className="emoji";
+  const allEmojis=[...floatingConfig.baseEmojis,...extra]; e.innerText=allEmojis[Math.floor(Math.random()*allEmojis.length)];
+  e.style.left=Math.random()*100+"vw"; e.style.bottom="-50px"; e.style.animationDuration=(10+Math.random()*10)+"s";
+  document.body.appendChild(e); if(Math.random()<floatingConfig.goldenTunaChance) spawnGoldenTuna();
   setTimeout(()=>e.remove(),floatingConfig.duration);
 }
 
 function spawnGoldenTuna(){
-  const t=document.createElement("div");
-  t.className="emoji";
-  t.innerText="🐟✨";
-  t.style.left=Math.random()*100+"vw";
-  t.style.bottom="-40px";
-  t.style.fontSize="26px";
-  t.style.opacity="1";
-  t.style.zIndex="20";
-  t.onclick=()=>{
-    tunaCount++; heartExplosion(10); confetti(); t.remove();
-    if(tunaCount===3){
-      setTimeout(()=>{
-        heartExplosion(50); confetti();
-        for(let i=0;i<5;i++) spawnFloatingEmoji(['🐟','💜','✨']);
-      },500);
-    }
-  };
-  document.body.appendChild(t);
-  setTimeout(()=>t.remove(),floatingConfig.duration);
+  const t=document.createElement("div"); t.className="emoji"; t.innerText="🐟✨"; t.style.left=Math.random()*100+"vw"; t.style.bottom="-40px"; t.style.fontSize="26px"; t.style.opacity="1"; t.style.zIndex="20";
+  t.onclick=()=>{ tunaCount++; heartExplosion(10); confetti(); t.remove(); if(tunaCount===3){ setTimeout(()=>{ heartExplosion(50); confetti(); for(let i=0;i<5;i++) spawnFloatingEmoji(['🐟','💜','✨']); },500); } };
+  document.body.appendChild(t); setTimeout(()=>t.remove(),floatingConfig.duration);
 }
 
-// Spawn emojis continuously
-setInterval(()=>spawnFloatingEmoji(), floatingConfig.interval);
-
+setInterval(()=>spawnFloatingEmoji(),floatingConfig.interval);
 </script>
 </body>
 </html>
