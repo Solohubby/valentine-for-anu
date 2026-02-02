@@ -24,30 +24,31 @@ const config = {
 };
 
 /* ---------------- STATE ---------------- */
-let step=0;
-let perfectRun=true;
-let clickCombo=[];
-let comboTimer=null;
-let tunaCount=0;
+let step = 0;
+let perfectRun = true;
+let clickCombo = [];
+let comboTimer = null;
+let tunaCount = 0;
 
 /* ---------------- FLOATING EMOJIS ---------------- */
 function spawnGoldenTuna(){
-  if(Math.random()<0.05){
-    const t=document.createElement("div");
-    t.className="emoji";
-    t.innerText="🐟✨";
-    t.style.left=Math.random()*100+"vw";
-    t.style.bottom="-40px";
-    t.style.fontSize="26px";
-    t.style.opacity="1";
-    t.style.zIndex="20";
+  if(Math.random() < 0.05){
+    const t = document.createElement("div");
+    t.className = "emoji";
+    t.innerText = "🐟✨";
+    t.style.left = Math.random()*100 + "vw";
+    t.style.bottom = "-40px";
+    t.style.fontSize = "26px";
+    t.style.opacity = "1";
+    t.style.zIndex = "20";
 
-    t.onclick=()=>{
+    t.onclick = () => {
       tunaCount++;
       heartExplosion(10);
       confetti();
       t.remove();
-      if(tunaCount===3){
+
+      if(tunaCount === 3){
         setTimeout(()=>{
           heartExplosion(50);
           confetti();
@@ -55,6 +56,7 @@ function spawnGoldenTuna(){
         },500);
       }
     };
+
     document.body.appendChild(t);
     setTimeout(()=>t.remove(),15000);
   }
@@ -62,17 +64,22 @@ function spawnGoldenTuna(){
 
 function floatEmojis(extra=[]){
   setInterval(()=>{
-    const e=document.createElement("div");
-    e.className="emoji";
-    const all=[...config.floatingEmojis.hearts,
+    const e = document.createElement("div");
+    e.className = "emoji";
+
+    const all = [
+      ...config.floatingEmojis.hearts,
       ...config.floatingEmojis.btsMembers,
       ...config.floatingEmojis.strawberries,
       ...config.floatingEmojis.tunas,
-      ...extra];
-    e.innerText=all[Math.floor(Math.random()*all.length)];
-    e.style.left=Math.random()*100+"vw";
-    e.style.bottom="-50px";
-    e.style.animationDuration=(10+Math.random()*10)+"s";
+      ...extra
+    ];
+
+    e.innerText = all[Math.floor(Math.random()*all.length)];
+    e.style.left = Math.random()*100 + "vw";
+    e.style.bottom = "-50px";
+    e.style.animationDuration = (10 + Math.random()*10) + "s";
+
     document.body.appendChild(e);
     spawnGoldenTuna();
     setTimeout(()=>e.remove(),15000);
@@ -82,13 +89,13 @@ floatEmojis();
 
 /* ---------------- EFFECTS ---------------- */
 function confetti(){
-  const colors=["#ff6b6b","#ff8787","#ffb6b9"];
+  const colors = ["#ff6b6b","#ff8787","#ffb6b9"];
   for(let i=0;i<40;i++){
-    const c=document.createElement("div");
-    c.className="confetti-piece";
-    c.style.setProperty("--color",colors[Math.random()*3|0]);
+    const c = document.createElement("div");
+    c.className = "confetti-piece";
+    c.style.setProperty("--color", colors[Math.floor(Math.random()*colors.length)]);
     c.style.setProperty("--x",(Math.random()*200-100)+"px");
-    c.style.left=Math.random()*100+"vw";
+    c.style.left = Math.random()*100 + "vw";
     document.body.appendChild(c);
     setTimeout(()=>c.remove(),3000);
   }
@@ -96,11 +103,11 @@ function confetti(){
 
 function heartExplosion(n=20){
   for(let i=0;i<n;i++){
-    const h=document.createElement("div");
-    h.className="heart-explosion";
-    h.innerText=['❤️','💜','🐟','🐹'][Math.random()*4|0];
-    h.style.left=Math.random()*window.innerWidth+"px";
-    h.style.top=Math.random()*window.innerHeight+"px";
+    const h = document.createElement("div");
+    h.className = "heart-explosion";
+    h.innerText = ['❤️','💜','🐟','🐹'][Math.floor(Math.random()*4)];
+    h.style.left = Math.random()*window.innerWidth + "px";
+    h.style.top = Math.random()*window.innerHeight + "px";
     document.body.appendChild(h);
     setTimeout(()=>h.remove(),1000);
   }
@@ -108,78 +115,95 @@ function heartExplosion(n=20){
 
 /* ---------------- JIN ---------------- */
 function jinEasterEgg(){
-  if(Math.random()<0.03){
-    const jin=document.getElementById("jinPop");
-    jin.style.bottom="30px";
-    confetti();heartExplosion(20);
+  if(Math.random() < 0.03){
+    const jin = document.getElementById("jinPop");
+    jin.style.bottom = "30px";
+    confetti();
+    heartExplosion(20);
     setTimeout(()=>alert("💜 WORLD WIDE HANDSOME YOU KNOW 💜"),300);
     setTimeout(()=>jin.style.bottom="-300px",2500);
   }
 }
 
 /* ---------------- QUESTIONS ---------------- */
-const card=document.getElementById("card");
+const card = document.getElementById("card");
 
 function showQuestion(){
-  const q=config.questions[step];
-  card.innerHTML=`<div class="step">Step ${step+1}</div><p>${q.text}</p>`;
+  const q = config.questions[step];
+  card.innerHTML = `<div class="step">Step ${step+1}</div><p>${q.text}</p>`;
+
   if(q.options){
     q.options.forEach(o=>{
-      const b=document.createElement("button");
-      b.innerText=o;
-      b.onclick=()=>{
-        if(o===q.answer){
+      const b = document.createElement("button");
+      b.innerText = o;
+      b.onclick = ()=>{
+        if(o === q.answer){
           jinEasterEgg();
           step++;
-          step<config.questions.length?showQuestion():showCelebration();
+          step < config.questions.length ? showQuestion() : showCelebration();
         }else{
-          perfectRun=false;
+          perfectRun = false;
           alert("BITCH SHAME ON YOUR KHANDAAN");
         }
       };
       card.appendChild(b);
     });
-  }else{
-    const y=document.createElement("button");
-    y.innerText=q.yes;
-    y.onclick=()=>{step++;showQuestion()};
-    const n=document.createElement("button");
-    n.innerText=q.no;
-    n.onclick=()=>{perfectRun=false;alert("GO CRY ABOUT IT")};
-    n.onmouseover=()=>n.style.transform=`translate(${Math.random()*100}px,${Math.random()*100}px)`;
+  } else {
+    const y = document.createElement("button");
+    y.innerText = q.yes;
+    y.onclick = ()=>{ step++; showQuestion(); };
+
+    const n = document.createElement("button");
+    n.innerText = q.no;
+    n.onclick = ()=>{ perfectRun=false; alert("GO CRY ABOUT IT"); };
+    n.onmouseover = ()=> n.style.transform =
+      `translate(${Math.random()*100}px,${Math.random()*100}px)`;
+
     card.append(y,n);
   }
 }
 
 /* ---------------- CELEBRATION ---------------- */
 function showCelebration(){
-  card.innerHTML=`<h1>${config.celebration.title}</h1>
-  <p>${config.celebration.message}</p>
-  <p>${config.celebration.emojis}</p>`;
-  confetti();heartExplosion(30);
+  card.innerHTML = `
+    <h1>${config.celebration.title}</h1>
+    <p>${config.celebration.message}</p>
+    <p>${config.celebration.emojis}</p>
+  `;
+  confetti();
+  heartExplosion(30);
+
   if(perfectRun){
     setTimeout(()=>{
-      confetti();heartExplosion(40);
+      confetti();
+      heartExplosion(40);
       floatEmojis(['💜','🐟','🍓','✨']);
     },800);
   }
 }
 
-/* ---------------- CLICK COMBOS ---------------- */
-card.addEventListener("click",()=>{
-  clickCombo.push(Date.now());
-  clearTimeout(comboTimer);
-  comboTimer=setTimeout(()=>clickCombo=[],1000);
-  if(clickCombo.length===3) heartExplosion(15);
-  if(clickCombo.length===5){confetti();floatEmojis(['🐟'])}
-  if(clickCombo.length===7) alert("💜 WORLD WIDE HANDSOME ACTIVATED 💜");
-});
+/* ---------------- CLICK COMBOS (SAFE) ---------------- */
+if(card){
+  card.addEventListener("click",()=>{
+    clickCombo.push(Date.now());
+    clearTimeout(comboTimer);
+    comboTimer = setTimeout(()=>clickCombo=[],1000);
 
-/* ---------------- MUSIC (FIXED) ---------------- */
-const song=document.getElementById("valentineSong");
+    if(clickCombo.length === 3) heartExplosion(15);
+    if(clickCombo.length === 5){ confetti(); floatEmojis(['🐟']); }
+    if(clickCombo.length === 7) alert("💜 WORLD WIDE HANDSOME ACTIVATED 💜");
+  });
+}
 
-document.getElementById("startBtn").onclick=()=>{
-  song.play().catch(()=>{});
+/* ---------------- MUSIC (FINAL FIX) ---------------- */
+const song = document.getElementById("valentineSong");
+song.muted = true;
+song.load();
+
+document.getElementById("startBtn").onclick = () => {
+  song.play().then(()=>{
+    song.muted = false;
+  }).catch(()=>{});
   showQuestion();
 };
 </script>
