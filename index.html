@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Be My Galentine 💜🍓🐟</title>
+<title>Be My Galentine... You have no other option.. Womp Womp 💜🍓🐟</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
@@ -35,9 +35,6 @@
 
   .heart-explosion { position:fixed; font-size:30px; animation:explode 1s forwards; }
   @keyframes explode { 0% { transform:scale(0); opacity:1; } 50% { transform:scale(1.5); opacity:1; } 100% { transform:scale(0); opacity:0; } }
-
-  #musicBtn { position: fixed; top: 10px; right: 10px; background:#ff6b6b; color:white; border:none; border-radius:50px; padding:10px 15px; cursor:pointer; }
-  #musicBtn:hover { background:#ff8787; }
 </style>
 </head>
 <body>
@@ -48,31 +45,7 @@
   <button id="startBtn">Start! 🐟🍓</button>
 </div>
 
-<!-- Music Toggle Button -->
-<button id="musicBtn">🔊 Music ON</button>
-
 <script>
-// ---------- SONG ----------
-const song = new Audio("mySong.mp3"); // Put your song file here
-song.loop = true;
-song.volume = 0.5;
-let isPlaying = false;
-
-// Toggle music button
-const musicBtn = document.getElementById("musicBtn");
-musicBtn.onclick = ()=>{
-  if(isPlaying){
-    song.pause();
-    musicBtn.innerText = "🔇 Music OFF";
-    isPlaying = false;
-  } else {
-    song.play();
-    musicBtn.innerText = "🔊 Music ON";
-    isPlaying = true;
-  }
-};
-
-// ---------- CONFIG ----------
 const config = {
   valentineName: "ANU",
   floatingEmojis: {
@@ -86,7 +59,7 @@ const config = {
     { text:"Wanna be my Galentine?", yes:"Of course! 🍓", no:"NO???" },
     { text:"BTS Quiz: Who was the last member to join BTS?", options:["V","Jin","Jimin","J-Hope"], answer:"Jimin" },
     { text:"BTS Quiz: Which one of these songs is NOT an original Japanese single?", options:["Save Me","Lights","Stay Gold","Film out"], answer:"Save Me" },
-    { text:"Final check: Are you ready for some 'Nom Nom'?", yes:"Yes! 💜", no:"No?????" }
+    { text:"Final check: Are you ready for some \"Nom Nom\"?", yes:"Yes! 💜", no:"No?????" }
   ],
   celebration: { 
     title:"Yay! Let's Gooooo! 💖", 
@@ -111,6 +84,7 @@ function floatEmojis(extra = []) {
     emoji.style.animationDuration = (10+Math.random()*10) + "s";
     document.body.appendChild(emoji);
 
+    // Interactive Tuna click
     if(config.floatingEmojis.tunas.includes(emoji.innerText)){
       emoji.onclick = ()=>{
         const h = document.createElement("div");
@@ -183,12 +157,27 @@ function miniInteraction(callback){
 let step=0;
 const card = document.getElementById("card");
 
+// Shuffle BTS quiz questions
+function shuffleArray(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+// Separate normal questions and quiz questions
+const normalQuestions = config.questions.filter(q=>!q.options);
+const quizQuestions = shuffleArray(config.questions.filter(q=>q.options));
+const allQuestions = [...normalQuestions.slice(0,2), ...quizQuestions, ...normalQuestions.slice(2)];
+
 function showQuestion(s){
   step = s;
-  const q = config.questions[s-1];
-  card.innerHTML = `<div class="step">Step ${s} of ${config.questions.length}</div>`;
+  const q = allQuestions[s-1];
+  card.innerHTML = `<div class="step">Step ${s} of ${allQuestions.length}</div>`;
 
   if(q.options){
+    // Quiz type
     const p = document.createElement("p"); p.innerText = q.text;
     card.appendChild(p);
     q.options.forEach(opt=>{
@@ -196,7 +185,7 @@ function showQuestion(s){
       btn.innerText = opt;
       btn.onclick = ()=>{
         if(opt === q.answer){
-          miniInteraction(()=> s<config.questions.length ? showQuestion(s+1) : showCelebration());
+          miniInteraction(()=> s<allQuestions.length ? showQuestion(s+1) : showCelebration());
         } else {
           alert("BITCH SHAME ON YOUR KHANDAAN");
         }
@@ -204,15 +193,18 @@ function showQuestion(s){
       card.appendChild(btn);
     });
   } else {
+    // Yes/No type
     const p = document.createElement("p"); p.innerText = q.text;
     const yes = document.createElement("button"); yes.innerText = q.yes;
     const no = document.createElement("button"); no.innerText = q.no;
-    yes.onclick = ()=>{ miniInteraction(()=> s<config.questions.length ? showQuestion(s+1) : showCelebration()); };
+
+    yes.onclick = ()=>{ miniInteraction(()=> s<allQuestions.length ? showQuestion(s+1) : showCelebration()); };
     no.onclick = ()=>{ alert("GO CRY ABOUT IT"); };
     no.addEventListener("mouseover",()=>{
       const x=Math.random()*180-90; const y=Math.random()*180-90;
       no.style.transform=`translate(${x}px,${y}px)`;
     });
+
     card.append(p,yes,no);
   }
 }
@@ -224,16 +216,26 @@ function showCelebration(){
                     <p>${config.celebration.emojis}</p>`;
   confetti();
   heartExplosion(30);
-  floatEmojis(['💜 ANU 💜','🎶','🍓','🐟']);
+  floatEmojis(['💜 ARMY 💜','🎶','🍓','🐟']);
 }
 
 // ---------- START BUTTON ----------
-document.getElementById("startBtn").onclick = ()=>{
-  song.play(); // Play song when start
-  isPlaying = true;
-  musicBtn.innerText = "🔊 Music ON";
-  showQuestion(1);
-};
+document.getElementById("startBtn").onclick = ()=>showQuestion(1);
+</script>
+
+<!-- ---------- MUSIC ---------- -->
+<audio id="valentineSong" src="mySong.mp3.mp3" loop></audio>
+<script>
+  const song = document.getElementById("valentineSong");
+  let musicStarted = false;
+
+  document.body.addEventListener('click', function playMusic() {
+    if (!musicStarted) {
+      song.play();
+      musicStarted = true;
+      document.body.removeEventListener('click', playMusic);
+    }
+  });
 </script>
 
 </body>
