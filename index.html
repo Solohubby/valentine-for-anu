@@ -100,7 +100,8 @@ button:hover{background:#ff8787}
   pointer-events:none;
 ">🐹✨</div>
 
-<audio id="valentineSong" src="mySong.mp3" loop></audio>
+<!-- Correct song file name -->
+<audio id="valentineSong" src="mySong.mp3.mp3" loop></audio>
 
 <script>
 /* ---------------- ORIGINAL CONFIG ---------------- */
@@ -151,6 +152,7 @@ function spawnGoldenTuna(){
       heartExplosion(10);
       confetti();
       t.remove();
+
       if(tunaCount===3){
         setTimeout(()=>{
           heartExplosion(50);
@@ -197,6 +199,7 @@ function confetti(){
     setTimeout(()=>c.remove(),3000);
   }
 }
+
 function heartExplosion(n=20){
   for(let i=0;i<n;i++){
     const h=document.createElement("div");
@@ -280,6 +283,7 @@ card.addEventListener("click",()=>{
 
 /* ---------------- MUSIC ---------------- */
 const song=document.getElementById("valentineSong");
+
 document.getElementById("startBtn").onclick=()=>{
   song.play().catch(()=>{});
   showQuestion();
