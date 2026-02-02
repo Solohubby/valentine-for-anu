@@ -125,9 +125,14 @@ function showQuestion(){
         confetti();
         spawnFloatingEmoji(['💜','🐟','🍓','✨']);
         jinEasterEgg();
-        // THEN MOVE TO NEXT QUESTION
+
+        // THEN MOVE TO NEXT STEP
         step++;
-        showQuestion();
+        if(step < config.questions.length){
+            showQuestion();  // next question
+        } else {
+            showCelebration(); // final celebration
+        }
     };
 
     const n=document.createElement("button");
