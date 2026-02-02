@@ -34,7 +34,7 @@
   @keyframes fall { to { transform:translate(var(--x),100vh) rotate(360deg); opacity:0; } }
 
   .heart-explosion { position:fixed; font-size:30px; animation:explode 1s forwards; }
-  @keyframes explode {
+  @keyframes explode { 
     0% { transform:scale(0); opacity:1; }
     50% { transform:scale(1.5); opacity:1; }
     100% { transform:scale(0); opacity:0; }
@@ -51,6 +51,7 @@
 
 <script>
 const config = {
+  valentineName: "ANU",
   floatingEmojis: {
     hearts: ['❤️','💖','💝','💗','💓'],
     btsMembers: ['🐨','🐹','🐱','🐿️','🐥','🐯','🐰'],
@@ -58,31 +59,29 @@ const config = {
     tunas: ['🐟']
   },
   questions: [
-    { text:"Do you like me?", yes:"Yes 💜", no:"No" },
+    { text:"Do you like me?", yes:"Yes 💜", no:"No", secret:"I don't like you, I love you! 🍓" },
     { text:"Wanna be my Galentine?", yes:"Of course! 🍓", no:"NO???" },
     { text:"BTS Quiz: Who was the last member to join BTS?", options:["V","Jin","Jimin","J-Hope"], answer:"Jimin" },
     { text:"BTS Quiz: Which one of these songs is NOT an original Japanese single?", options:["Save Me","Lights","Stay Gold","Film out"], answer:"Save Me" },
     { text:"Final check: Are you ready for some 'Nom Nom'?", yes:"Yes! 💜", no:"No?????" }
   ],
-  celebration: {
-    title:"Yay! Let's Goooo! 💖",
-    message:"Chamchi! Woaahh.... Let's go, syu peo cham chi💝",
-    emojis:"🐟🎉💜🍓🎶"
+  celebration: { 
+    title:"Yay! Let's Goooo! 💖", 
+    message:"Chamchi! Woaahh.... Let's go, syu peo cham chi💝", 
+    emojis:"🐟🎉💜🍓🎶" 
   }
 };
 
-// FLOATING EMOJIS
+// ---------- FLOATING EMOJIS ----------
 function floatEmojis(extra = []) {
   setInterval(()=>{
     const emoji = document.createElement("div");
     emoji.className="emoji";
-    const all = [
-      ...config.floatingEmojis.hearts,
-      ...config.floatingEmojis.btsMembers,
-      ...config.floatingEmojis.strawberries,
-      ...config.floatingEmojis.tunas,
-      ...extra
-    ];
+    const all = [...config.floatingEmojis.hearts, 
+                 ...config.floatingEmojis.btsMembers, 
+                 ...config.floatingEmojis.strawberries, 
+                 ...config.floatingEmojis.tunas,
+                 ...extra];
     emoji.innerText = all[Math.floor(Math.random()*all.length)];
     emoji.style.left = Math.random()*100 + "vw";
     emoji.style.bottom = "-50px";
@@ -95,7 +94,8 @@ function floatEmojis(extra = []) {
         h.className="heart-explosion";
         h.style.left = emoji.offsetLeft + "px";
         h.style.top = emoji.offsetTop + "px";
-        h.innerText = '💜';
+        const items = [...config.floatingEmojis.hearts, ...config.floatingEmojis.btsMembers];
+        h.innerText = items[Math.floor(Math.random()*items.length)];
         document.body.appendChild(h);
         setTimeout(()=>h.remove(),1000);
         emoji.remove();
@@ -107,8 +107,8 @@ function floatEmojis(extra = []) {
 }
 floatEmojis();
 
-// CONFETTI
-function confetti(){
+// ---------- CONFETTI ----------
+function confetti() {
   const colors = ["#ff6b6b","#ff8787","#ffb6b9"];
   for(let i=0;i<40;i++){
     const c = document.createElement("div");
@@ -121,53 +121,93 @@ function confetti(){
   }
 }
 
-// MINI INTERACTION
-function miniInteraction(cb){
-  confetti();
-  setTimeout(cb,1200);
+// ---------- HEART/EMOJI EXPLOSION ----------
+function heartExplosion(count=20) {
+  for(let i=0;i<count;i++){
+    const heart = document.createElement("div");
+    heart.className="heart-explosion";
+    heart.style.left = Math.random()*window.innerWidth + "px";
+    heart.style.top = Math.random()*window.innerHeight + "px";
+    const all = [...config.floatingEmojis.hearts, ...config.floatingEmojis.btsMembers, ...config.floatingEmojis.tunas];
+    heart.innerText = all[Math.floor(Math.random()*all.length)];
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(),1000);
+  }
 }
 
-// QUESTIONS
+// ---------- MINI INTERACTION ----------
+function miniInteraction(callback){
+  floatEmojis(['🐟 chamchimyeon eotteohali 🐟','🎶','🍓','🐟']);
+  const tapHandler = (e)=>{
+    const h = document.createElement("div");
+    h.className="heart-explosion";
+    h.style.left = e.clientX + "px";
+    h.style.top = e.clientY + "px";
+    const all = [...config.floatingEmojis.hearts, ...config.floatingEmojis.btsMembers, ...config.floatingEmojis.strawberries, ...config.floatingEmojis.tunas];
+    h.innerText = all[Math.floor(Math.random()*all.length)];
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),1000);
+  };
+  document.body.addEventListener('click', tapHandler);
+  confetti();
+  setTimeout(()=>{
+    document.body.removeEventListener('click', tapHandler);
+    callback();
+  },2000);
+}
+
+// ---------- QUESTIONS ----------
 let step=0;
 const card = document.getElementById("card");
 
 function showQuestion(s){
+  step = s;
   const q = config.questions[s-1];
   card.innerHTML = `<div class="step">Step ${s} of ${config.questions.length}</div>`;
 
   if(q.options){
-    card.innerHTML += `<p>${q.text}</p>`;
+    const p = document.createElement("p"); p.innerText = q.text;
+    card.appendChild(p);
     q.options.forEach(opt=>{
-      const b=document.createElement("button");
-      b.innerText=opt;
-      b.onclick=()=> opt===q.answer ? miniInteraction(()=>next(s)) : alert("WRONG 😭");
-      card.appendChild(b);
+      const btn = document.createElement("button");
+      btn.innerText = opt;
+      btn.onclick = ()=>{
+        if(opt === q.answer){
+          miniInteraction(()=> s<config.questions.length ? showQuestion(s+1) : showCelebration());
+        } else {
+          alert("BITCH SHAME ON YOUR KHANDAAN");
+        }
+      }
+      card.appendChild(btn);
     });
   } else {
-    card.innerHTML += `<p>${q.text}</p>`;
-    const y=document.createElement("button");
-    const n=document.createElement("button");
-    y.innerText=q.yes;
-    n.innerText=q.no;
-    y.onclick=()=>miniInteraction(()=>next(s));
-    n.onmouseover=()=>n.style.transform=`translate(${Math.random()*100-50}px,${Math.random()*100-50}px)`;
-    card.append(y,n);
+    const p = document.createElement("p"); p.innerText = q.text;
+    const yes = document.createElement("button"); yes.innerText = q.yes;
+    const no = document.createElement("button"); no.innerText = q.no;
+
+    yes.onclick = ()=>{ miniInteraction(()=> s<config.questions.length ? showQuestion(s+1) : showCelebration()); };
+    no.onclick = ()=>{ alert("GO CRY ABOUT IT"); };
+    no.addEventListener("mouseover",()=>{
+      const x=Math.random()*180-90; const y=Math.random()*180-90;
+      no.style.transform=`translate(${x}px,${y}px)`;
+    });
+
+    card.append(p,yes,no);
   }
 }
 
-function next(s){
-  s < config.questions.length ? showQuestion(s+1) : showCelebration();
-}
-
-// CELEBRATION
+// ---------- CELEBRATION ----------
 function showCelebration(){
   card.innerHTML = `<h1>${config.celebration.title}</h1>
-  <p>${config.celebration.message}</p>
-  <p>${config.celebration.emojis}</p>`;
+                    <p>${config.celebration.message}</p>
+                    <p>${config.celebration.emojis}</p>`;
   confetti();
+  heartExplosion(30);
+  floatEmojis(['💜 ARMY 💜','🎶','🍓','🐟']);
 }
 
-document.getElementById("startBtn").onclick=()=>showQuestion(1);
+// ---------- START BUTTON ----------
+document.getElementById("startBtn").onclick = ()=>showQuestion(1);
 </script>
 
 </body>
