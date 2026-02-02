@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Be My Galentine 💜🍓🐟</title>
+<title>Be My Galentine... You have no other option.. Womp Womp 💜🍓🐟</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -20,58 +20,62 @@ body{
   padding:30px;
   border-radius:25px;
   text-align:center;
-  width:90%;max-width:420px;
-  box-shadow:0 10px 25px rgba(0,0,0,.25);
-  z-index:5;color:#ff4757;
+  width:90%;max-width:400px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.25);
+  position:relative;
+  z-index:1;
+  color:#ff4757;
 }
 
-h1{margin-bottom:15px}
-p{margin-bottom:20px}
+h1{font-size:24px;margin-bottom:15px}
+p{font-size:16px;margin-bottom:20px}
 .step{font-size:14px;margin-bottom:10px;color:#ff6b6b}
 
 button{
   padding:12px 28px;
+  font-size:16px;
   border:none;border-radius:50px;
+  cursor:pointer;margin:10px;
   background:#ff6b6b;color:white;
-  font-size:16px;cursor:pointer;
-  margin:10px;
 }
 button:hover{background:#ff8787}
 
 .emoji{
   position:fixed;
   font-size:22px;
-  animation:floatUp linear forwards;
-  opacity:.7;z-index:1;
+  animation:floatUp 15s linear forwards;
+  opacity:.7;
+  z-index:0;
   cursor:grab;
 }
+.emoji:hover{transform:scale(1.6);opacity:1}
 
 @keyframes floatUp{
   from{transform:translateY(0)}
-  to{transform:translateY(-110vh)}
+  to{transform:translateY(-100vh)}
+}
+
+.confetti-piece{
+  position:fixed;
+  width:10px;height:10px;
+  background:var(--color);
+  top:0;
+  animation:fall 3s forwards;
+  z-index:10;
+}
+@keyframes fall{
+  to{transform:translate(var(--x),100vh) rotate(360deg);opacity:0}
 }
 
 .heart-explosion{
   position:fixed;
   font-size:30px;
   animation:explode 1s forwards;
-  z-index:10;
 }
-
 @keyframes explode{
   0%{transform:scale(0);opacity:1}
   50%{transform:scale(1.5)}
   100%{transform:scale(0);opacity:0}
-}
-
-.confetti{
-  position:fixed;width:10px;height:10px;
-  background:var(--c);
-  animation:fall 3s forwards;
-}
-
-@keyframes fall{
-  to{transform:translate(var(--x),100vh) rotate(360deg);opacity:0}
 }
 </style>
 </head>
@@ -81,157 +85,226 @@ button:hover{background:#ff8787}
 <div id="card">
   <h1>💜 Galentine's Day 💜🍓🐟</h1>
   <p>Are you ready? 🐟🍓</p>
-  <button id="startBtn">Start!</button>
+  <button id="startBtn">Start! 🐟🍓</button>
 </div>
 
-<!-- Jin Easter Egg -->
+<!-- Jin Pop -->
 <div id="jinPop" style="
   position:fixed;
   bottom:-300px;
   left:50%;
   transform:translateX(-50%);
   font-size:80px;
-  transition:.6s;
+  transition:0.6s;
   z-index:9999;
   pointer-events:none;
 ">🐹✨</div>
 
-<audio id="song" src="mySong.mp3" loop></audio>
+<audio id="valentineSong" src="mySong.mp3.mp3" loop></audio>
 
 <script>
-/* ---------- CONFIG ---------- */
-const emojis = ['❤️','💜','💖','🍓','🐟','🐹','🐯','🐰','✨'];
-const questions = [
- {text:"Do you like me?",yes:"Yes 💜",no:"No"},
- {text:"Wanna be my Galentine?",yes:"Of course 🍓",no:"NO??"},
- {text:"Seventeen Quiz: Who is Boo?",options:["DK","Dino","Seungkwan","S.Coups"],answer:"Seungkwan"},
- {text:"Born year?",options:["1998","1999","2000","2011"],answer:"1999"},
- {text:"Ready for Kharcha Karchi?",yes:"YES 💸",no:"No??"}
-];
+/* ---------------- ORIGINAL CONFIG ---------------- */
+const config = {
+  floatingEmojis:{
+    hearts:['❤️','💖','💝','💗','💓'],
+    btsMembers:['🐨','🐹','🐱','🐿️','🐥','🐯','🐰'],
+    strawberries:['🍓'],
+    tunas:['🐟']
+  },
+  questions:[
+    {text:"Do you like me?",yes:"Yes 💜",no:"No"},
+    {text:"Wanna be my Galentine?",yes:"Of course! 🍓",no:"NO??"},
+    {text:"BTS Quiz: Who was the last member to join BTS?",options:["V","Jin","Jimin","J-Hope"],answer:"V"},
+    {text:"BTS Quiz: Which one of these songs is NOT an original Japanese single?",options:["Save Me","Lights","Stay Gold","Film out"],answer:"Save Me"},
+    {text:"Seventeen Quiz: Which member is called Boo?",options:["S.coups","DK","Seungkwan","Dino"],answer:"Seungkwan"},
+    {text:"Prarthi Quiz: In which year was I born?",options:["1998","1999","2000","2011"],answer:"1999"},
+    {text:'Final check: Are you ready for some "Kharcha Karchi"?',yes:"Yes! 💜",no:"No?????"}
+  ],
+  celebration:{
+    title:"Yay! Let's Gooooo! 💖",
+    message:"Chamchi! Woaahh.... Let's go, syu peo cham chi",
+    emojis:"🐟🎉💜🍓🎶"
+  }
+};
 
-/* ---------- FLOATING BACKGROUND ---------- */
-function spawnEmoji(){
- const e=document.createElement("div");
- e.className="emoji";
- e.innerText=emojis[Math.floor(Math.random()*emojis.length)];
- e.style.left=Math.random()*100+"vw";
- e.style.bottom="-40px";
- e.style.animationDuration=(10+Math.random()*10)+"s";
- document.body.appendChild(e);
- setTimeout(()=>e.remove(),15000);
+/* ---------------- ADD-ONLY STATE ---------------- */
+let step=0;
+let perfectRun=true;
+let clickCombo=[];
+let comboTimer=null;
+let tunaCount=0;
+
+/* ---------------- FLOATING EMOJIS ---------------- */
+function spawnGoldenTuna(){
+  if(Math.random()<0.05){
+    const t=document.createElement("div");
+    t.className="emoji";
+    t.innerText="🐟✨";
+    t.style.left=Math.random()*100+"vw";
+    t.style.bottom="-40px";
+    t.style.fontSize="26px";
+    t.style.opacity="1";
+    t.style.zIndex="20";
+
+    t.onclick=()=>{
+      tunaCount++;
+      heartExplosion(10);
+      confetti();
+      t.remove();
+      if(tunaCount===3){
+        setTimeout(()=>{
+          heartExplosion(50);
+          confetti();
+          floatEmojis(['🐟','🐟','🐟','💜','✨']);
+        },500);
+      }
+    };
+    document.body.appendChild(t);
+    setTimeout(()=>t.remove(),15000);
+  }
 }
-setInterval(spawnEmoji,400);
 
-/* ---------- DRAG ---------- */
-let drag=null;
+function floatEmojis(extra=[]){
+  setInterval(()=>{
+    const e=document.createElement("div");
+    e.className="emoji";
+    const all=[...config.floatingEmojis.hearts,
+      ...config.floatingEmojis.btsMembers,
+      ...config.floatingEmojis.strawberries,
+      ...config.floatingEmojis.tunas,
+      ...extra];
+    e.innerText=all[Math.floor(Math.random()*all.length)];
+    e.style.left=Math.random()*100+"vw";
+    e.style.bottom="-50px";
+    e.style.animationDuration=(10+Math.random()*10)+"s";
+    document.body.appendChild(e);
+    spawnGoldenTuna();
+    setTimeout(()=>e.remove(),15000);
+  },400);
+}
+floatEmojis();
+
+/* ---------------- DRAGGABLE ---------------- */
+let dragged=null;
 document.addEventListener("mousedown",e=>{
- if(e.target.classList.contains("emoji")){
-  drag=e.target;
-  drag.style.animationPlayState="paused";
- }
+  if(e.target.classList.contains("emoji")){
+    dragged=e.target;
+    dragged.style.animationPlayState="paused";
+  }
 });
 document.addEventListener("mousemove",e=>{
- if(drag){
-  drag.style.left=e.clientX+"px";
-  drag.style.top=e.clientY+"px";
- }
+  if(dragged){
+    dragged.style.left=e.clientX+"px";
+    dragged.style.top=e.clientY+"px";
+  }
 });
 document.addEventListener("mouseup",()=>{
- if(drag){
-  explode(6);
-  drag.remove();
-  drag=null;
- }
+  if(dragged){
+    heartExplosion(5);
+    dragged.remove();
+    dragged=null;
+  }
 });
 
-/* ---------- EFFECTS ---------- */
-function explode(n){
- for(let i=0;i<n;i++){
-  const h=document.createElement("div");
-  h.className="heart-explosion";
-  h.innerText=emojis[Math.floor(Math.random()*emojis.length)];
-  h.style.left=Math.random()*innerWidth+"px";
-  h.style.top=Math.random()*innerHeight+"px";
-  document.body.appendChild(h);
-  setTimeout(()=>h.remove(),1000);
- }
-}
-
+/* ---------------- EFFECTS ---------------- */
 function confetti(){
- for(let i=0;i<40;i++){
-  const c=document.createElement("div");
-  c.className="confetti";
-  c.style.setProperty("--c",["#ff6b6b","#ffb6b9","#ffc3a0"][Math.random()*3|0]);
-  c.style.setProperty("--x",(Math.random()*200-100)+"px");
-  c.style.left=Math.random()*100+"vw";
-  document.body.appendChild(c);
-  setTimeout(()=>c.remove(),3000);
- }
+  const colors=["#ff6b6b","#ff8787","#ffb6b9"];
+  for(let i=0;i<40;i++){
+    const c=document.createElement("div");
+    c.className="confetti-piece";
+    c.style.setProperty("--color",colors[Math.random()*3|0]);
+    c.style.setProperty("--x",(Math.random()*200-100)+"px");
+    c.style.left=Math.random()*100+"vw";
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
+}
+function heartExplosion(n=20){
+  for(let i=0;i<n;i++){
+    const h=document.createElement("div");
+    h.className="heart-explosion";
+    h.innerText=['❤️','💜','🐟','🐹'][Math.random()*4|0];
+    h.style.left=Math.random()*innerWidth+"px";
+    h.style.top=Math.random()*innerHeight+"px";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),1000);
+  }
 }
 
-/* ---------- JIN ---------- */
-function jinChance(){
- if(Math.random()<0.03){
-  const jin=document.getElementById("jinPop");
-  jin.style.bottom="30px";
-  explode(20);confetti();
-  setTimeout(()=>alert("💜 WORLD WIDE HANDSOME YOU KNOW 💜"),300);
-  setTimeout(()=>jin.style.bottom="-300px",2500);
- }
+/* ---------------- JIN ---------------- */
+function jinEasterEgg(){
+  if(Math.random()<0.03){
+    const jin=document.getElementById("jinPop");
+    jin.style.bottom="30px";
+    confetti();heartExplosion(20);
+    setTimeout(()=>alert("💜 WORLD WIDE HANDSOME YOU KNOW 💜"),300);
+    setTimeout(()=>jin.style.bottom="-300px",2500);
+  }
 }
 
-/* ---------- QUIZ ---------- */
-let step=0;
+/* ---------------- QUESTIONS ---------------- */
 const card=document.getElementById("card");
 
-function showQ(){
- const q=questions[step];
- card.innerHTML=`<div class="step">Step ${step+1}</div><p>${q.text}</p>`;
- if(q.options){
-  q.options.forEach(o=>{
-   const b=document.createElement("button");
-   b.innerText=o;
-   b.onclick=()=>{
-    if(o===q.answer){
-     jinChance();explode(10);confetti();
-     step++;step<questions.length?showQ():end();
-    } else alert("WRONG 😤");
-   };
-   card.appendChild(b);
-  });
- } else {
-  const y=document.createElement("button");
-  y.innerText=q.yes;
-  y.onclick=()=>{explode(10);step++;showQ();}
-  const n=document.createElement("button");
-  n.innerText=q.no;
-  n.onmouseover=()=>n.style.transform=`translate(${Math.random()*100}px,${Math.random()*100}px)`;
-  card.append(y,n);
- }
+function showQuestion(){
+  const q=config.questions[step];
+  card.innerHTML=`<div class="step">Step ${step+1}</div><p>${q.text}</p>`;
+  if(q.options){
+    q.options.forEach(o=>{
+      const b=document.createElement("button");
+      b.innerText=o;
+      b.onclick=()=>{
+        if(o===q.answer){
+          jinEasterEgg();
+          step++;
+          step<config.questions.length?showQuestion():showCelebration();
+        }else{
+          perfectRun=false;
+          alert("BITCH SHAME ON YOUR KHANDAAN");
+        }
+      };
+      card.appendChild(b);
+    });
+  }else{
+    const y=document.createElement("button");
+    y.innerText=q.yes;
+    y.onclick=()=>{step++;showQuestion()};
+    const n=document.createElement("button");
+    n.innerText=q.no;
+    n.onclick=()=>{perfectRun=false;alert("GO CRY ABOUT IT")};
+    n.onmouseover=()=>n.style.transform=`translate(${Math.random()*100}px,${Math.random()*100}px)`;
+    card.append(y,n);
+  }
 }
 
-function end(){
- card.innerHTML="<h1>YAY 💜</h1><p>Galentines secured 🐟🍓</p>";
- explode(30);confetti();
+/* ---------------- CELEBRATION ---------------- */
+function showCelebration(){
+  card.innerHTML=`<h1>${config.celebration.title}</h1>
+  <p>${config.celebration.message}</p>
+  <p>${config.celebration.emojis}</p>`;
+  confetti();heartExplosion(30);
+  if(perfectRun){
+    setTimeout(()=>{
+      confetti();heartExplosion(40);
+      floatEmojis(['💜','🐟','🍓','✨']);
+    },800);
+  }
 }
 
-/* ---------- EASTER EGG ---------- */
-let clicks=0;
+/* ---------------- CLICK COMBOS ---------------- */
 card.addEventListener("click",()=>{
- clicks++;
- if(clicks===7){
-  explode(25);
-  alert("💜 WORLD WIDE HANDSOME ACTIVATED 💜");
- }
+  clickCombo.push(Date.now());
+  clearTimeout(comboTimer);
+  comboTimer=setTimeout(()=>clickCombo=[],1000);
+  if(clickCombo.length===3) heartExplosion(15);
+  if(clickCombo.length===5){confetti();floatEmojis(['🐟'])}
+  if(clickCombo.length===7) alert("💜 WORLD WIDE HANDSOME ACTIVATED 💜");
 });
 
-/* ---------- MUSIC ---------- */
-const song=document.getElementById("song");
-document.body.addEventListener("click",()=>{
- song.play().catch(()=>{});
-},{once:true});
+/* ---------------- MUSIC ---------------- */
+const song=document.getElementById("valentineSong");
+document.body.addEventListener("click",()=>song.play().catch(()=>{}),{once:true});
 
-document.getElementById("startBtn").onclick=showQ;
+document.getElementById("startBtn").onclick=showQuestion;
 </script>
 
 </body>
