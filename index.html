@@ -150,10 +150,29 @@ function showQuestion(){
   }
 }
 
+// ===== CELEBRATION =====
 function showCelebration(){
-  card.innerHTML=`<h1>${config.celebration.title}</h1><p>${config.celebration.message}</p><p>${config.celebration.emojis}</p>`;
-  confetti(); heartExplosion(30);
-  if(perfectRun){ setTimeout(()=>{ confetti(); heartExplosion(40); },800); }
+  card.innerHTML = `
+    <h1>${config.celebration.title}</h1>
+    <p>${config.celebration.message}</p>
+    <p>${config.celebration.emojis}</p>
+  `;
+  
+  // Initial confetti and hearts
+  confetti(); 
+  heartExplosion(30);
+  
+  if(perfectRun){
+    setTimeout(()=>{
+      confetti(); 
+      heartExplosion(40); 
+      // Extra floating emojis
+      for(let i=0;i<10;i++) spawnFloatingEmoji(['💜','🐟','🍓','✨']);
+    }, 800);
+  }
+
+  // Keep floating emojis and golden tunas indefinitely
+  setInterval(() => spawnFloatingEmoji(['💜','🐟','🍓','✨']), 500);
 }
 
 // ===== CLICK COMBO =====
