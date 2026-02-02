@@ -13,7 +13,7 @@
 
   #card { background: #fff0f5; padding:30px; border-radius:25px; text-align:center;
           width:90%; max-width:400px; box-shadow:0 10px 25px rgba(0,0,0,0.25);
-          position:relative; z-index:1; color:#ff4757; }
+          position:relative; z-index:1; color:#ff4757; cursor:pointer; }
 
   h1 { font-size:24px; color:#ff4757; margin-bottom:15px; }
   p { font-size:16px; margin-bottom:20px; color:#ff4757; }
@@ -46,6 +46,7 @@
 </div>
 
 <script>
+// ---------------- CONFIG ----------------
 const config = {
   valentineName: "ANU",
   floatingEmojis: {
@@ -55,18 +56,14 @@ const config = {
     tunas: ['🐟']
   },
   questions: [
-  { text:"Do you like me?", yes:"Yes 💜", no:"No", secret:"I don't like you, I love you! 🍓" },
-  { text:"Wanna be my Galentine?", yes:"Of course! 🍓", no:"NO??" },
-  { text:"BTS Quiz: Who was the last member to join BTS?", options:["V","Jin","Jimin","J-Hope"], answer:"V" },
-  { text:"BTS Quiz: Which one of these songs is NOT an original Japanese single?", options:["Save Me","Lights","Stay Gold","Film out"], answer:"Save Me" },
-
-  // <-- ADD THESE TWO BELOW
-  { text:"Seventeen Quiz: Which member is called Boo?", options:["S.coups","DK","Seungkwan","Dino"], answer:"Seungkwan" },
-  { text:"Prarthi Quiz: In which year was I born?", options:["1998","1999","2000","2011"], answer:"1999" },
-
-  { text:"Final check: Are you ready for some \"Kharcha Karchi\"?", yes:"Yes! 💜", no:"No?????" }
-],
-  
+    { text:"Do you like me?", yes:"Yes 💜", no:"No", secret:"I don't like you, I love you! 🍓" },
+    { text:"Wanna be my Galentine?", yes:"Of course! 🍓", no:"NO??" },
+    { text:"BTS Quiz: Who was the last member to join BTS?", options:["V","Jin","Jimin","J-Hope"], answer:"V" },
+    { text:"BTS Quiz: Which one of these songs is NOT an original Japanese single?", options:["Save Me","Lights","Stay Gold","Film out"], answer:"Save Me" },
+    { text:"Seventeen Quiz: Which member is called Boo?", options:["S.coups","DK","Seungkwan","Dino"], answer:"Seungkwan" },
+    { text:"Prarthi Quiz: In which year was I born?", options:["1998","1999","2000","2011"], answer:"1999" },
+    { text:"Final check: Are you ready for some \"Kharcha Karchi\"?", yes:"Yes! 💜", no:"No?????" }
+  ],
   celebration: { 
     title:"Yay! Let's Gooooo! 💖", 
     message:"Chamchi! Woaahh.... Let's go, syu peo cham chi", 
@@ -74,7 +71,7 @@ const config = {
   }
 };
 
-// ---------- FLOATING EMOJIS ----------
+// ---------------- FLOATING EMOJIS ----------------
 function floatEmojis(extra = []) {
   setInterval(()=>{
     const emoji = document.createElement("div");
@@ -92,7 +89,7 @@ function floatEmojis(extra = []) {
 
     // Interactive Tuna click
     if(config.floatingEmojis.tunas.includes(emoji.innerText)){
-      emoji.onclick = ()=>{
+      emoji.onclick = ()=> {
         const h = document.createElement("div");
         h.className="heart-explosion";
         h.style.left = emoji.offsetLeft + "px";
@@ -110,7 +107,28 @@ function floatEmojis(extra = []) {
 }
 floatEmojis();
 
-// ---------- CONFETTI ----------
+// ---------------- INTERACTIVE FLOATING BACKGROUND ----------------
+function floatingBackground() {
+  setInterval(() => {
+    const div = document.createElement('div');
+    div.className = 'emoji';
+    div.innerText = ['⭐','✨','💖','💜'][Math.floor(Math.random()*4)];
+    div.style.left = Math.random()*100 + 'vw';
+    div.style.bottom = '-50px';
+    div.style.fontSize = (15 + Math.random()*20) + 'px';
+    div.style.opacity = 0.6;
+    div.style.animationDuration = (8+Math.random()*8) + 's';
+    
+    div.addEventListener('mouseenter', () => div.style.transform = 'scale(1.8)');
+    div.addEventListener('mouseleave', () => div.style.transform = 'scale(1)');
+    
+    document.body.appendChild(div);
+    setTimeout(() => div.remove(), 15000);
+  }, 500);
+}
+floatingBackground();
+
+// ---------------- CONFETTI ----------------
 function confetti() {
   const colors = ["#ff6b6b","#ff8787","#ffb6b9"];
   for(let i=0;i<40;i++){
@@ -124,13 +142,13 @@ function confetti() {
   }
 }
 
-// ---------- HEART/EMOJI EXPLOSION ----------
+// ---------------- HEART/EMOJI EXPLOSION ----------------
 function heartExplosion(count=20) {
   for(let i=0;i<count;i++){
-    const heart = document.createElement("div");
-    heart.className="heart-explosion";
-    heart.style.left = Math.random()*window.innerWidth + "px";
-    heart.style.top = Math.random()*window.innerHeight + "px";
+    const heart = document.createElement('div');
+    heart.className = 'heart-explosion';
+    heart.style.left = Math.random()*window.innerWidth + 'px';
+    heart.style.top = Math.random()*window.innerHeight + 'px';
     const all = [...config.floatingEmojis.hearts, ...config.floatingEmojis.btsMembers, ...config.floatingEmojis.tunas];
     heart.innerText = all[Math.floor(Math.random()*all.length)];
     document.body.appendChild(heart);
@@ -138,14 +156,14 @@ function heartExplosion(count=20) {
   }
 }
 
-// ---------- MINI INTERACTION ----------
+// ---------------- MINI INTERACTION ----------------
 function miniInteraction(callback){
   floatEmojis(['🐟 chamchimyeon eotteohali 🐟','🎶','🍓','🐟']);
   const tapHandler = (e)=>{
-    const h = document.createElement("div");
-    h.className="heart-explosion";
-    h.style.left = e.clientX + "px";
-    h.style.top = e.clientY + "px";
+    const h = document.createElement('div');
+    h.className='heart-explosion';
+    h.style.left = e.clientX + 'px';
+    h.style.top = e.clientY + 'px';
     const all = [...config.floatingEmojis.hearts, ...config.floatingEmojis.btsMembers, ...config.floatingEmojis.strawberries, ...config.floatingEmojis.tunas];
     h.innerText = all[Math.floor(Math.random()*all.length)];
     document.body.appendChild(h);
@@ -159,11 +177,22 @@ function miniInteraction(callback){
   },2000);
 }
 
-// ---------- QUESTIONS ----------
+// ---------------- SEVENTEEN MINI EFFECT ----------------
+function seventeenInteraction() {
+  const heart = document.createElement('div');
+  heart.className = 'heart-explosion';
+  heart.style.left = Math.random()*window.innerWidth + 'px';
+  heart.style.top = Math.random()*window.innerHeight + 'px';
+  const icons = ['💖','💜','🌟','💎'];
+  heart.innerText = icons[Math.floor(Math.random()*icons.length)];
+  document.body.appendChild(heart);
+  setTimeout(()=>heart.remove(), 1000);
+}
+
+// ---------------- QUESTIONS ----------------
 let step=0;
 const card = document.getElementById("card");
 
-// Shuffle BTS quiz questions
 function shuffleArray(arr){
   for(let i=arr.length-1;i>0;i--){
     const j=Math.floor(Math.random()*(i+1));
@@ -172,7 +201,6 @@ function shuffleArray(arr){
   return arr;
 }
 
-// Separate normal questions and quiz questions
 const normalQuestions = config.questions.filter(q=>!q.options);
 const quizQuestions = shuffleArray(config.questions.filter(q=>q.options));
 const allQuestions = [...normalQuestions.slice(0,2), ...quizQuestions, ...normalQuestions.slice(2)];
@@ -183,7 +211,6 @@ function showQuestion(s){
   card.innerHTML = `<div class="step">Step ${s} of ${allQuestions.length}</div>`;
 
   if(q.options){
-    // Quiz type
     const p = document.createElement("p"); p.innerText = q.text;
     card.appendChild(p);
     q.options.forEach(opt=>{
@@ -191,6 +218,7 @@ function showQuestion(s){
       btn.innerText = opt;
       btn.onclick = ()=>{
         if(opt === q.answer){
+          if(q.text.includes('Seventeen')) seventeenInteraction(); // <-- special effect
           miniInteraction(()=> s<allQuestions.length ? showQuestion(s+1) : showCelebration());
         } else {
           alert("BITCH SHAME ON YOUR KHANDAAN");
@@ -199,7 +227,6 @@ function showQuestion(s){
       card.appendChild(btn);
     });
   } else {
-    // Yes/No type
     const p = document.createElement("p"); p.innerText = q.text;
     const yes = document.createElement("button"); yes.innerText = q.yes;
     const no = document.createElement("button"); no.innerText = q.no;
@@ -215,7 +242,7 @@ function showQuestion(s){
   }
 }
 
-// ---------- CELEBRATION ----------
+// ---------------- CELEBRATION ----------------
 function showCelebration(){
   card.innerHTML = `<h1>${config.celebration.title}</h1>
                     <p>${config.celebration.message}</p>
@@ -225,24 +252,35 @@ function showCelebration(){
   floatEmojis(['💜 world wide handsome you know 💜','🎶','🍓','🐟']);
 }
 
-// ---------- START BUTTON ----------
+// ---------------- START BUTTON ----------------
 document.getElementById("startBtn").onclick = ()=>showQuestion(1);
-</script>
 
-<!-- ---------- MUSIC ---------- -->
+// ---------------- EASTER EGG: WORLD WIDE HANDSOME ----------------
+let handsomeClickCount = 0;
+const title = document.querySelector('#card h1');
+title.addEventListener('click', () => {
+  handsomeClickCount++;
+  if(handsomeClickCount >= 5){
+    alert("💜 World Wide Handsome Activated! 💜");
+    floatEmojis(['💜 WORLD WIDE HANDSOME 💜','🎶','🐟']);
+    handsomeClickCount = 0;
+  }
+});
+
+// ---------------- MUSIC ----------------
 <audio id="valentineSong" src="mySong.mp3.mp3" loop></audio>
 <script>
-  const song = document.getElementById("valentineSong");
-  let musicStarted = false;
-
-  document.body.addEventListener('click', function playMusic() {
-    if (!musicStarted) {
-      song.play();
-      musicStarted = true;
-      document.body.removeEventListener('click', playMusic);
-    }
-  });
+const song = document.getElementById("valentineSong");
+let musicStarted = false;
+document.body.addEventListener('click', function playMusic() {
+  if (!musicStarted) {
+    song.play();
+    musicStarted = true;
+    document.body.removeEventListener('click', playMusic);
+  }
+});
 </script>
 
+</script>
 </body>
 </html>
