@@ -1,107 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Be My Galentine... You have no other option.. Womp Womp 💜🍓🐟</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
-
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Comic Neue',cursive;}
-body{
-  height:100vh;display:flex;justify-content:center;align-items:center;
-  background:linear-gradient(135deg,#ffafbd,#ffc3a0);
-  overflow:hidden;
-}
-
-#card{
-  background:#fff0f5;
-  padding:30px;
-  border-radius:25px;
-  text-align:center;
-  width:90%;max-width:400px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.25);
-  position:relative;
-  z-index:1;
-  color:#ff4757;
-}
-
-h1{font-size:24px;margin-bottom:15px}
-p{font-size:16px;margin-bottom:20px}
-.step{font-size:14px;margin-bottom:10px;color:#ff6b6b}
-
-button{
-  padding:12px 28px;
-  font-size:16px;
-  border:none;border-radius:50px;
-  cursor:pointer;margin:10px;
-  background:#ff6b6b;color:white;
-}
-button:hover{background:#ff8787}
-
-.emoji{
-  position:fixed;
-  font-size:22px;
-  animation:floatUp 15s linear forwards;
-  opacity:.7;
-  z-index:0;
-  cursor:grab;
-}
-.emoji:hover{transform:scale(1.6);opacity:1}
-
-@keyframes floatUp{
-  from{transform:translateY(0)}
-  to{transform:translateY(-100vh)}
-}
-
-.confetti-piece{
-  position:fixed;
-  width:10px;height:10px;
-  background:var(--color);
-  top:0;
-  animation:fall 3s forwards;
-  z-index:10;
-}
-@keyframes fall{
-  to{transform:translate(var(--x),100vh) rotate(360deg);opacity:0}
-}
-
-.heart-explosion{
-  position:fixed;
-  font-size:30px;
-  animation:explode 1s forwards;
-}
-@keyframes explode{
-  0%{transform:scale(0);opacity:1}
-  50%{transform:scale(1.5)}
-  100%{transform:scale(0);opacity:0}
-}
-</style>
-</head>
-
-<body>
-
-<div id="card">
-  <h1>💜 Galentine's Day 💜🍓🐟</h1>
-  <p>Are you ready? 🐟🍓</p>
-  <button id="startBtn">Start! 🐟🍓</button>
-</div>
-
-<!-- Jin Pop -->
-<div id="jinPop" style="
-  position:fixed;
-  bottom:-300px;
-  left:50%;
-  transform:translateX(-50%);
-  font-size:80px;
-  transition:0.6s;
-  z-index:9999;
-  pointer-events:none;
-">🐹✨</div>
-
-<audio id="valentineSong" src="mySong.mp3.mp3" loop></audio>
-
 <script>
 /* ---------------- ORIGINAL CONFIG ---------------- */
 const config = {
@@ -127,7 +23,7 @@ const config = {
   }
 };
 
-/* ---------------- ADD-ONLY STATE ---------------- */
+/* ---------------- STATE ---------------- */
 let step=0;
 let perfectRun=true;
 let clickCombo=[];
@@ -184,28 +80,6 @@ function floatEmojis(extra=[]){
 }
 floatEmojis();
 
-/* ---------------- DRAGGABLE ---------------- */
-let dragged=null;
-document.addEventListener("mousedown",e=>{
-  if(e.target.classList.contains("emoji")){
-    dragged=e.target;
-    dragged.style.animationPlayState="paused";
-  }
-});
-document.addEventListener("mousemove",e=>{
-  if(dragged){
-    dragged.style.left=e.clientX+"px";
-    dragged.style.top=e.clientY+"px";
-  }
-});
-document.addEventListener("mouseup",()=>{
-  if(dragged){
-    heartExplosion(5);
-    dragged.remove();
-    dragged=null;
-  }
-});
-
 /* ---------------- EFFECTS ---------------- */
 function confetti(){
   const colors=["#ff6b6b","#ff8787","#ffb6b9"];
@@ -219,13 +93,14 @@ function confetti(){
     setTimeout(()=>c.remove(),3000);
   }
 }
+
 function heartExplosion(n=20){
   for(let i=0;i<n;i++){
     const h=document.createElement("div");
     h.className="heart-explosion";
     h.innerText=['❤️','💜','🐟','🐹'][Math.random()*4|0];
-    h.style.left=Math.random()*innerWidth+"px";
-    h.style.top=Math.random()*innerHeight+"px";
+    h.style.left=Math.random()*window.innerWidth+"px";
+    h.style.top=Math.random()*window.innerHeight+"px";
     document.body.appendChild(h);
     setTimeout(()=>h.remove(),1000);
   }
@@ -300,12 +175,11 @@ card.addEventListener("click",()=>{
   if(clickCombo.length===7) alert("💜 WORLD WIDE HANDSOME ACTIVATED 💜");
 });
 
-/* ---------------- MUSIC ---------------- */
+/* ---------------- MUSIC (FIXED) ---------------- */
 const song=document.getElementById("valentineSong");
-document.body.addEventListener("click",()=>song.play().catch(()=>{}),{once:true});
 
-document.getElementById("startBtn").onclick=showQuestion;
+document.getElementById("startBtn").onclick=()=>{
+  song.play().catch(()=>{});
+  showQuestion();
+};
 </script>
-
-</body>
-</html>
