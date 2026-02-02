@@ -117,6 +117,7 @@ function heartExplosion(n=20){
 function jinEasterEgg(){
   if(Math.random() < 0.03){
     const jin = document.getElementById("jinPop");
+    if(!jin) return;
     jin.style.bottom = "30px";
     confetti();
     heartExplosion(20);
@@ -130,6 +131,8 @@ const card = document.getElementById("card");
 
 function showQuestion(){
   const q = config.questions[step];
+  if(!q) return;
+
   card.innerHTML = `<div class="step">Step ${step+1}</div><p>${q.text}</p>`;
 
   if(q.options){
@@ -182,7 +185,7 @@ function showCelebration(){
   }
 }
 
-/* ---------------- CLICK COMBOS (SAFE) ---------------- */
+/* ---------------- CLICK COMBOS ---------------- */
 if(card){
   card.addEventListener("click",()=>{
     clickCombo.push(Date.now());
@@ -195,15 +198,20 @@ if(card){
   });
 }
 
-/* ---------------- MUSIC (FINAL FIX) ---------------- */
+/* ---------------- MUSIC ---------------- */
 const song = document.getElementById("valentineSong");
-song.muted = true;
-song.load();
+if(song){
+  song.muted = true;
+  song.load();
+}
 
-document.getElementById("startBtn").onclick = () => {
-  song.play().then(()=>{
-    song.muted = false;
-  }).catch(()=>{});
-  showQuestion();
-};
+const startBtn = document.getElementById("startBtn");
+if(startBtn){
+  startBtn.onclick = () => {
+    if(song){
+      song.play().then(()=> song.muted = false).catch(()=>{});
+    }
+    showQuestion();
+  };
+}
 </script>
